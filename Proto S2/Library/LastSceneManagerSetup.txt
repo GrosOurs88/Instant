@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scene/Hugo_test.unity
+- path: Assets/Scene/Attika_test.unity
   isLoaded: 1
   isActive: 1
