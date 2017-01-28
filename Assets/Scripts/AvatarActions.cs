@@ -12,6 +12,7 @@ public class AvatarActions : MonoBehaviour {
     private bool block_Taken = false;
 
     public float maxDist;
+    public float impulsion;
 
 	void Start () {
         cam = gameObject.GetComponent<Camera>().transform;
@@ -35,9 +36,13 @@ public class AvatarActions : MonoBehaviour {
         if (block_Taken)
         {
             Block_taken_GO.transform.position = transform.position + transform.forward * dist_to_Block;
-            if (Input.GetKeyDown(KeyCode.Mouse1))
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-
+                ImpulseBlock();
+            }
+            if (Input.GetKeyDown(KeyCode.Mouse2))
+            {
+                Block_taken_GO.BroadcastMessage("OnSignal");
             }
         }
 
@@ -69,16 +74,18 @@ public class AvatarActions : MonoBehaviour {
             Block_taken_GO = target;
             Block_taken_GO.BroadcastMessage("OnHold");
         }
-        /*else if (Pickable(50f, out target) == false)
-        {
-            block_Taken = false;
-            Block_taken = null;
-        }*/
     }
 
     private void LeaveBlock()
     {
         block_Taken = false;
         Block_taken_GO = null;
+    }
+
+    private void ImpulseBlock()
+    {
+        Block_taken_GO.BroadcastMessage("OnHold");
+        Block_taken_GO.GetComponent<Rigidbody>().AddForce(transform.forward * impulsion, ForceMode.Impulse);
+        LeaveBlock();
     }
 }
