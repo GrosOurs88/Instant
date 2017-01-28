@@ -151,6 +151,10 @@ public class Block : MonoBehaviour
         {
             SwitchState(BlockState.HOLD);
         }
+        else if (state == BlockState.HOLD)
+        {
+            SwitchState(BlockState.ACTIVE);
+        }
     }
 
 
