@@ -7,7 +7,7 @@ public class AvatarActions : MonoBehaviour {
 
     private Transform cam;
     private GameObject target = null;
-    private GameObject Block_taken = null;
+    private GameObject Block_taken_GO = null;
     private int dist_to_Block = 10;
     private bool block_Taken = false;
 
@@ -27,14 +27,20 @@ public class AvatarActions : MonoBehaviour {
             }
             else
             {
+                Block_taken_GO.BroadcastMessage("OnHold");
                 LeaveBlock();
             }
         }
 
         if (block_Taken)
         {
-            Block_taken.transform.position = transform.position + transform.forward * dist_to_Block;
+            Block_taken_GO.transform.position = transform.position + transform.forward * dist_to_Block;
+            if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+
+            }
         }
+
         
     }
 
@@ -60,8 +66,8 @@ public class AvatarActions : MonoBehaviour {
         if (Pickable(out target) == true)
         {
             block_Taken = true;
-            Block_taken = target;
-            Block_taken.BroadcastMessage("OnHold");
+            Block_taken_GO = target;
+            Block_taken_GO.BroadcastMessage("OnHold");
         }
         /*else if (Pickable(50f, out target) == false)
         {
@@ -73,6 +79,6 @@ public class AvatarActions : MonoBehaviour {
     private void LeaveBlock()
     {
         block_Taken = false;
-        Block_taken = null;
+        Block_taken_GO = null;
     }
 }
