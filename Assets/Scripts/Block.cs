@@ -32,7 +32,6 @@ public class Block : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         renderer = GetComponent<Renderer>();
         signalsLeft = numberOfSignalToUnfix;
-        rigid.Sleep();
         renderer.material = neutralMaterial;
     }
 
@@ -82,21 +81,25 @@ public class Block : MonoBehaviour
         switch (state)
         {
             case BlockState.NEUTRAL:
+                tag = "Block";
                 renderer.material = neutralMaterial;
                 rigid.isKinematic = false;
                 break;
 
             case BlockState.ACTIVE:
+                tag = "Block";
                 renderer.material = activeMaterial;
                 rigid.isKinematic = false;
                 break;
 
             case BlockState.FIXED:
+                tag = "Untagged";
                 renderer.material = fixedMaterial;
                 rigid.isKinematic = true;
                 break;
 
             case BlockState.HOLD:
+                tag = "Untagged";
                 renderer.material = holdMaterial;
                 rigid.isKinematic = true;
                 break;
@@ -108,7 +111,7 @@ public class Block : MonoBehaviour
 
     }
 
-    public void SwitchState(BlockState newState)
+    private void SwitchState(BlockState newState)
     {
         ExitState();
         state = newState;
@@ -141,5 +144,14 @@ public class Block : MonoBehaviour
             signalsLeft--;
         }
     }
+
+    private void OnHold()
+    {
+        if (state == BlockState.ACTIVE || state == BlockState.NEUTRAL)
+        {
+            SwitchState(BlockState.HOLD);
+        }
+    }
+
 
 }
