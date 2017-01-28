@@ -45,19 +45,19 @@ public class Block : MonoBehaviour
         switch(state)
         {
             case BlockState.NEUTRAL:
-                if (rigid.IsSleeping() == false)
+                if (IsSleeping() == false)
                 {
                     SwitchState(BlockState.ACTIVE);
                 }
                 break;
 
             case BlockState.ACTIVE:
-                if (rigid.IsSleeping() && !isTimerRunning)
+                if (IsSleeping() && !isTimerRunning)
                 {
                     StartCoroutine("FadeToGrey");
                 }
 
-                if (rigid.IsSleeping() == false && isTimerRunning)
+                if (IsSleeping() == false && isTimerRunning)
                 {
                     StopAllCoroutines();
                     renderer.material = activeMaterial;
@@ -155,6 +155,11 @@ public class Block : MonoBehaviour
         {
             SwitchState(BlockState.ACTIVE);
         }
+    }
+
+    private bool IsSleeping()
+    {
+        return rigid.velocity == Vector3.zero;
     }
 
 
