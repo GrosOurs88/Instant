@@ -6,6 +6,12 @@ public class AvatarActions : MonoBehaviour {
 
 
     private Transform cam;
+    private GameObject target = null;
+    private GameObject Block_taken = null;
+    private int dist_to_Block = 10;
+    private bool block_Taken = false;
+
+    public float maxDist;
 
 	void Start () {
         cam = gameObject.GetComponent<Camera>().transform;
@@ -13,10 +19,26 @@ public class AvatarActions : MonoBehaviour {
 	
 
 	void Update () {
-        TakeBlock();
-	}
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            if (!block_Taken)
+            {
+                TakeBlock();
+            }
+            else
+            {
+                LeaveBlock();
+            }
+        }
 
-    private bool Pickable(float maxDist) // vérifie si un Block peut être saisi dans la distance maxDist
+        if (block_Taken)
+        {
+            Block_taken.transform.position = transform.position + transform.forward * dist_to_Block;
+        }
+        
+    }
+
+    private bool Pickable(out GameObject Block) // vérifie si un Block peut être saisi dans la distance maxDist
     {
         Ray r = new Ray(transform.position, cam.forward);
         RaycastHit hit;
@@ -25,20 +47,32 @@ public class AvatarActions : MonoBehaviour {
         {
             if (hit.collider.gameObject.tag == "Block")
             {
+                Block = hit.collider.gameObject;
                 return true;
             }
         }
+        Block = null;
         return false;
     }
 
     private void TakeBlock()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (Pickable(out target) == true)
         {
-            if (Pickable(50f) == true)
-            {
-                
-            }
+            block_Taken = true;
+            Block_taken = target;
+            Block_taken.BroadcastMessage("OnHold");
         }
+        /*else if (Pickable(50f, out target) == false)
+        {
+            block_Taken = false;
+            Block_taken = null;
+        }*/
+    }
+
+    private void LeaveBlock()
+    {
+        block_Taken = false;
+        Block_taken = null;
     }
 }
