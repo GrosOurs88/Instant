@@ -8,11 +8,14 @@ public class AvatarActions : MonoBehaviour {
     private Transform cam;
     private GameObject target = null;
     private GameObject Block_taken_GO = null;
-    private int dist_to_Block = 10;
+    public float dist_to_Block = 5;
     private bool block_Taken = false;
+    private bool canEmitSignal = true;
 
     public float maxDist;
     public float impulsion;
+    public float signalTimer;
+    public float signalRange = 5.0f;
 
 	void Start () {
         cam = gameObject.GetComponent<Camera>().transform;
@@ -40,13 +43,12 @@ public class AvatarActions : MonoBehaviour {
             {
                 ImpulseBlock();
             }
-            if (Input.GetKeyDown(KeyCode.Mouse2))
-            {
-                Block_taken_GO.BroadcastMessage("OnSignal");
-            }
+        }
+        if (Input.GetKeyDown(KeyCode.Mouse2))
+        {
+            EmitSignal();
         }
 
-        
     }
 
     private bool Pickable(out GameObject Block) // vérifie si un Block peut être saisi dans la distance maxDist
@@ -87,5 +89,26 @@ public class AvatarActions : MonoBehaviour {
         Block_taken_GO.BroadcastMessage("OnHold");
         Block_taken_GO.GetComponent<Rigidbody>().AddForce(transform.forward * impulsion, ForceMode.Impulse);
         LeaveBlock();
+    }
+
+    private void EmitSignal()
+    {
+        if (canEmitSignal)
+        {
+            Debug.Log("Signal emitted");
+            canEmitSignal = false;
+            StartCoroutine("SignalTimer");
+            Collider[] cols = Physics.OverlapSphere(transform.position, signalRange);
+            foreach (Collider col in cols)
+            {
+                col.BroadcastMessage("OnSignal");
+            }
+        }
+    }
+
+    private IEnumerator SignalTimer()
+    {
+        yield return new WaitForSeconds(signalTimer);
+        canEmitSignal = true;
     }
 }
