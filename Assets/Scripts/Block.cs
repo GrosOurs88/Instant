@@ -19,7 +19,6 @@ public class Block : MonoBehaviour
     public Material holdMaterial;
     public Material fixedMaterial;
 
-    [HideInInspector]
     public BlockState state = BlockState.NEUTRAL;
 
     private Rigidbody rigid;
@@ -135,7 +134,7 @@ public class Block : MonoBehaviour
 
     private void OnSignal()
     {
-        if (state == BlockState.ACTIVE)
+        if (state == BlockState.ACTIVE || state == BlockState.NEUTRAL)
         {
             SwitchState(BlockState.FIXED);
         }
@@ -159,8 +158,7 @@ public class Block : MonoBehaviour
 
     private bool IsSleeping()
     {
-        return rigid.velocity == Vector3.zero;
+        return rigid.IsSleeping();
     }
-
 
 }
