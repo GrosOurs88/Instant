@@ -75,7 +75,6 @@ public class AvatarActions : MonoBehaviour {
             block_Taken = true;
             Block_taken_GO = target;
             Block_taken_GO.BroadcastMessage("OnHold");
-
 			BanqueSons.Catch.start ();
         }
     }
@@ -106,7 +105,6 @@ public class AvatarActions : MonoBehaviour {
             {
                 col.BroadcastMessage("OnSignal");
             }
-			BanqueSons.Signal.setVolume (10f);
 			BanqueSons.Signal.start ();
         }
     }
