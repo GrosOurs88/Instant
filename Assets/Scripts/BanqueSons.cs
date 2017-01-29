@@ -31,6 +31,9 @@ public class BanqueSons : MonoBehaviour
 		Freeze = FMODUnity.RuntimeManager.CreateInstance ("event:/Blocs/Freeze");
 		Impact = FMODUnity.RuntimeManager.CreateInstance ("event:/Blocs/Impact");
 
+		BanqueSons.Signal.setVolume (8f);
+		BanqueSons.Catch.setVolume (14f);
+		BanqueSons.Ambiance.setVolume (5f);
 
 		Ambiance.start ();
 
