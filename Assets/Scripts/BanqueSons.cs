@@ -33,7 +33,7 @@ public class BanqueSons : MonoBehaviour
 
 		BanqueSons.Signal.setVolume (8f);
 		BanqueSons.Catch.setVolume (14f);
-		BanqueSons.Ambiance.setVolume (5f);
+		BanqueSons.Ambiance.setVolume (0f);
 
 		Ambiance.start ();
 
