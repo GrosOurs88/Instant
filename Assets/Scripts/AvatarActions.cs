@@ -53,7 +53,7 @@ public class AvatarActions : MonoBehaviour {
 
     private bool Pickable(out GameObject Block) // vérifie si un Block peut être saisi dans la distance maxDist
     {
-        Ray r = new Ray(transform.position, cam.forward);
+        Ray r = new Ray(transform.position + cam.forward*0.5f, cam.forward);
         RaycastHit hit;
         int layer_mask = Physics.DefaultRaycastLayers;
         if (Physics.Raycast(r, out hit, maxDist, layer_mask))
