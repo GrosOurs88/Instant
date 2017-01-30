@@ -169,6 +169,7 @@ public class Block : MonoBehaviour
 
     private void OnHold()
     {
+        Debug.Log("OnHold");
         if (state == BlockState.ACTIVE || state == BlockState.NEUTRAL)
         {
             SwitchState(BlockState.HOLD);
