@@ -12,6 +12,7 @@ public class Block : MonoBehaviour
     [Header("Block's parameters")]
     public float numberOfSignalToUnfix = 3;
     public float timeBeforeBackToNeutral = 5.0f;
+    public float timeBeforeUnfix = 5.0f;
 
     [Header("Block's colors")]
     public Material neutralMaterial;
@@ -27,6 +28,8 @@ public class Block : MonoBehaviour
     private cakeslice.Outline outline;
     private float signalsLeft;
     private bool isTimerRunning = false;
+
+    private static bool autoUnfix = true;
 
     private void Start()
     {   
@@ -60,7 +63,7 @@ public class Block : MonoBehaviour
             case BlockState.ACTIVE:
                 if (IsSleeping() && !isTimerRunning)
                 {
-                    StartCoroutine("FadeToGrey");
+                    StartCoroutine("FadeToGrey", timeBeforeBackToNeutral);
                 }
 
                 if (IsSleeping() == false && isTimerRunning)
@@ -101,8 +104,10 @@ public class Block : MonoBehaviour
 
             case BlockState.FIXED:
                 tag = "Untagged";
-                rend.material = fixedMaterial;
+                rend.material = fixedMaterial;                
                 rigid.isKinematic = true;
+                if (autoUnfix)
+                    StartCoroutine("FadeToGrey", timeBeforeUnfix);
                 break;
 
             case BlockState.HOLD:
@@ -139,15 +144,15 @@ public class Block : MonoBehaviour
         EnterState();
     }
 
-    private IEnumerator FadeToGrey()
+    private IEnumerator FadeToGrey(float timer)
     {
         isTimerRunning = true;
         Color baseColor = rend.material.color;
         Color targetColor = neutralMaterial.color - rend.material.color*0.15f;
         float value = 0.0f;
-        while (value < timeBeforeBackToNeutral)
+        while (value < timer)
         {
-            rend.material.color = Color.Lerp(baseColor, targetColor, value/timeBeforeBackToNeutral);
+            rend.material.color = Color.Lerp(baseColor, targetColor, value/timer);
             value += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
@@ -160,10 +165,20 @@ public class Block : MonoBehaviour
         {
             SwitchState(BlockState.FIXED);
         }
+        /*
         else if (state == BlockState.FIXED)
         {
             signalsLeft--;
             rend.material.color = Color.Lerp(fixedMaterial.color , neutralMaterial.color - fixedMaterial.color * 0.15f, (-1.0f/numberOfSignalToUnfix) * signalsLeft + 1.0f);
+        }
+        */
+    }
+
+    private void OnDesactivationSignal()
+    {
+        if(state == BlockState.FIXED)
+        {
+            SwitchState(BlockState.NEUTRAL);
         }
     }
 
