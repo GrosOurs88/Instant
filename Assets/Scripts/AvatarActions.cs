@@ -17,10 +17,16 @@ public class AvatarActions : MonoBehaviour {
     public float signalTimer;
     public float signalRange = 5.0f;
     private Vector3 signalRangeCoord;
+
     public float radiusSignal = 1.0f;
+    private float signalRadiusMax = 5.0f;
+    private float signalRadiusMin = 1.0f;
+    private float manaMax = 10.0f;
+    private float mana;
 
 	void Start () {
         cam = gameObject.GetComponent<Camera>().transform;
+        mana = manaMax;
 	}
 	
 
@@ -50,7 +56,7 @@ public class AvatarActions : MonoBehaviour {
         {
             EmitSignal();
         }
-
+        
     }
 
     private bool Pickable(out GameObject Block) // vérifie si un Block peut être saisi dans la distance maxDist
@@ -114,7 +120,6 @@ public class AvatarActions : MonoBehaviour {
                 col.BroadcastMessage("OnSignal");
             }
             BanqueSons.Signal.start ();
-
         }
     }
 
@@ -123,4 +128,10 @@ public class AvatarActions : MonoBehaviour {
         yield return new WaitForSeconds(signalTimer);
         canEmitSignal = true;
     }
+
+    /*private IEnumerator SignalSize()
+    {
+
+        yield return null;
+    }*/
 }
