@@ -114,6 +114,7 @@ public class AvatarActions : MonoBehaviour {
                 col.BroadcastMessage("OnSignal");
             }
             BanqueSons.Signal.start ();
+
         }
     }
 
