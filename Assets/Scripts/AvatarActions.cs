@@ -16,6 +16,8 @@ public class AvatarActions : MonoBehaviour {
     public float impulsion;
     public float signalTimer;
     public float signalRange = 5.0f;
+    private Vector3 signalRangeCoord;
+    public float radiusSignal = 1.0f;
 
 	void Start () {
         cam = gameObject.GetComponent<Camera>().transform;
@@ -100,12 +102,18 @@ public class AvatarActions : MonoBehaviour {
             Debug.Log("Signal emitted");
             canEmitSignal = false;
             StartCoroutine("SignalTimer");
-            Collider[] cols = Physics.OverlapSphere(transform.position, signalRange);
+            /*Collider[] cols = Physics.OverlapSphere(transform.position, signalRange);
+            foreach (Collider col in cols)
+            {
+                col.BroadcastMessage("OnSignal");
+            }*/
+            signalRangeCoord = transform.position + cam.forward * signalRange;
+            Collider[] cols = Physics.OverlapCapsule(transform.position, signalRangeCoord, radiusSignal);
             foreach (Collider col in cols)
             {
                 col.BroadcastMessage("OnSignal");
             }
-			BanqueSons.Signal.start ();
+            BanqueSons.Signal.start ();
         }
     }
 
