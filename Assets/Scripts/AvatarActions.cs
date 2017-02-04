@@ -9,12 +9,17 @@ public class AvatarActions : MonoBehaviour {
     private Transform cam;
     private GameObject target = null;
     private GameObject Block_taken_GO = null;
+    private GameObject[] Blocks_taken;
     public float dist_to_Block = 5.0f;
     private float dist_to_BlockMax = 7.0f;
     private float dist_to_BlockMin = 3.0f;
     private bool block_Taken = false;
     public float maxDist;
     public float impulsion;
+    private float radiusSelection = 1.0f;
+    private float radiusSelectionMax = 7.0f;
+    private float radiusSelected = 1.0f;
+    public Image SelectionFdbck;
 
 
     [Header("Signal Parameters")]
@@ -41,14 +46,28 @@ public class AvatarActions : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            if (!block_Taken)
+            radiusSelection += 1 * Time.deltaTime; 
+        }
+        if (Input.GetKeyUp(KeyCode.Mouse1))
+        {
+            Debug.Log(radiusSelection);
+            radiusSelected = Mathf.Lerp(radiusSelected, radiusSelection, 0.1f);
+            SelectionFdbck.rectTransform.localScale = new Vector3(radiusSelected, radiusSelected, 1);
+            if (radiusSelected < 1.2f)
             {
-                TakeBlock();
+                if (!block_Taken)
+                {
+                    TakeBlock();
+                }
+                else
+                {
+                    Block_taken_GO.BroadcastMessage("OnHold");
+                    LeaveBlock();
+                }
             }
-            else
+            if (radiusSelected > 1.2f)
             {
-                Block_taken_GO.BroadcastMessage("OnHold");
-                LeaveBlock();
+                TakeSeveralBlock();
             }
         }
 
@@ -123,6 +142,20 @@ public class AvatarActions : MonoBehaviour {
             Block_taken_GO = target;
             Block_taken_GO.BroadcastMessage("OnHold");
 			BanqueSons.Catch.start ();
+        }
+    }
+
+    private void TakeSeveralBlock()
+    {
+        Vector3 maxDistVector = transform.position + cam.forward * maxDist;
+        Collider[] cols = Physics.OverlapCapsule(transform.position, maxDistVector, radiusSelection);
+        for (int i =0; i < cols.Length; i++)
+        {
+            Blocks_taken[i] = cols[i].gameObject;
+        }
+        foreach (GameObject a in Blocks_taken)
+        {
+            a.transform.position = transform.position + transform.forward * dist_to_Block;
         }
     }
 
