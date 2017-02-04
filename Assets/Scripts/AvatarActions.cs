@@ -5,26 +5,30 @@ using UnityEngine.UI;
 
 public class AvatarActions : MonoBehaviour {
 
-
+    [Header("Block Manipulation")]
     private Transform cam;
     private GameObject target = null;
     private GameObject Block_taken_GO = null;
-    public float dist_to_Block = 5;
+    public float dist_to_Block = 5.0f;
+    private float dist_to_BlockMax = 7.0f;
+    private float dist_to_BlockMin = 3.0f;
     private bool block_Taken = false;
-    private bool canEmitSignal = true;
-
     public float maxDist;
     public float impulsion;
+
+
+    [Header("Signal Parameters")]
+    private bool canEmitSignal = true;
     public float signalTimer;
     public float signalRange = 5.0f;
     private Vector3 signalRangeCoord;
-
     public float radiusSignal = 1.0f;
     private float signalRadiusMax = 5.0f;
     private float signalRadiusMin = 1.0f;
     public float signalEvolve = 1.0f;
     public Image SignalFdbck; 
 
+    [Header("Resources")]
     private float manaMax = 10.0f;
     private float mana;
 
@@ -50,6 +54,22 @@ public class AvatarActions : MonoBehaviour {
 
         if (block_Taken)
         {
+            if (Input.GetAxis("Mouse ScrollWheel") <0) // Bas
+            {
+                dist_to_Block -= 0.5f;
+                if (dist_to_Block < dist_to_BlockMin)
+                {
+                    dist_to_Block = dist_to_BlockMin;
+                }
+            }
+            if (Input.GetAxis("Mouse ScrollWheel") >0) //Haut
+            {
+                dist_to_Block += 0.5f;
+                if (dist_to_Block > dist_to_BlockMax)
+                {
+                    dist_to_Block = dist_to_BlockMax;
+                }
+            }
             Block_taken_GO.transform.position = transform.position + transform.forward * dist_to_Block;
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
@@ -60,21 +80,25 @@ public class AvatarActions : MonoBehaviour {
         {
             EmitSignal();
         }
-        if (Input.GetAxis("Mouse ScrollWheel") <0) // Bas
+
+        if (!block_Taken)
         {
-            signalEvolve -= 0.1f;
-            radiusSignal = Mathf.Lerp(signalRadiusMin, radiusSignal, signalEvolve);
-            SignalFdbck.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
-        }
-        if (Input.GetAxis("Mouse ScrollWheel") >0) // Haut
-        {
-            signalEvolve += 0.1f;
-            radiusSignal = Mathf.Lerp(radiusSignal, signalRadiusMax, signalEvolve);
-            SignalFdbck.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
+            if (Input.GetAxis("Mouse ScrollWheel") < 0) // Bas
+            {
+                signalEvolve -= 0.1f;
+                radiusSignal = Mathf.Lerp(signalRadiusMin, radiusSignal, signalEvolve);
+                SignalFdbck.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
+            }
+            if (Input.GetAxis("Mouse ScrollWheel") > 0) // Haut
+            {
+                signalEvolve += 0.1f;
+                radiusSignal = Mathf.Lerp(radiusSignal, signalRadiusMax, signalEvolve);
+                SignalFdbck.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
+            }
         }
     }
 
-    private bool Pickable(out GameObject Block) // vérifie si un Block peut être saisi dans la distance maxDist
+    private bool Pickable(out GameObject Block) // Vérifie si un Block peut être saisi dans la distance maxDist
     {
         Ray r = new Ray(transform.position + cam.forward*0.5f, cam.forward);
         RaycastHit hit;
@@ -123,11 +147,6 @@ public class AvatarActions : MonoBehaviour {
             Debug.Log("Signal emitted");
             canEmitSignal = false;
             StartCoroutine("SignalTimer");
-            /*Collider[] cols = Physics.OverlapSphere(transform.position, signalRange);
-            foreach (Collider col in cols)
-            {
-                col.BroadcastMessage("OnSignal");
-            }*/
             signalRangeCoord = transform.position + cam.forward * signalRange;
             Collider[] cols = Physics.OverlapCapsule(transform.position, signalRangeCoord, radiusSignal);
             foreach (Collider col in cols)
