@@ -21,7 +21,8 @@ public class AvatarActions : MonoBehaviour {
     public float radiusSignal = 1.0f;
     private float signalRadiusMax = 5.0f;
     private float signalRadiusMin = 1.0f;
-    public float signalEvolve = 0.1f;
+    public float signalEvolve = 1.0f;
+
     private float manaMax = 10.0f;
     private float mana;
 
@@ -59,11 +60,13 @@ public class AvatarActions : MonoBehaviour {
         }
         if (Input.GetAxis("Mouse ScrollWheel") <0) // Bas
         {
-            
+            signalEvolve -= 0.1f;
+            radiusSignal = Mathf.Lerp(signalRadiusMin, radiusSignal, signalEvolve);
         }
         if (Input.GetAxis("Mouse ScrollWheel") >0) // Haut
         {
-           
+            signalEvolve += 0.1f;
+            radiusSignal = Mathf.Lerp(radiusSignal, signalRadiusMax, signalEvolve);
         }
     }
 
@@ -137,11 +140,4 @@ public class AvatarActions : MonoBehaviour {
         canEmitSignal = true;
     }
 
-    private IEnumerator SignalSize()
-    {
-        for (float f = radiusSignal; f > signalRadiusMin; f -= signalEvolve)
-        {
-            yield return null;
-        }
-    }
 }
