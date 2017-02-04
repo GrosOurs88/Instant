@@ -21,6 +21,7 @@ public class AvatarActions : MonoBehaviour {
     public float radiusSignal = 1.0f;
     private float signalRadiusMax = 5.0f;
     private float signalRadiusMin = 1.0f;
+    public float signalEvolve = 0.1f;
     private float manaMax = 10.0f;
     private float mana;
 
@@ -56,7 +57,14 @@ public class AvatarActions : MonoBehaviour {
         {
             EmitSignal();
         }
-        
+        if (Input.GetAxis("Mouse ScrollWheel") <0) // Bas
+        {
+            
+        }
+        if (Input.GetAxis("Mouse ScrollWheel") >0) // Haut
+        {
+           
+        }
     }
 
     private bool Pickable(out GameObject Block) // vérifie si un Block peut être saisi dans la distance maxDist
@@ -129,9 +137,11 @@ public class AvatarActions : MonoBehaviour {
         canEmitSignal = true;
     }
 
-    /*private IEnumerator SignalSize()
+    private IEnumerator SignalSize()
     {
-
-        yield return null;
-    }*/
+        for (float f = radiusSignal; f > signalRadiusMin; f -= signalEvolve)
+        {
+            yield return null;
+        }
+    }
 }
