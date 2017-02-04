@@ -14,6 +14,7 @@ public class AvatarActions : MonoBehaviour {
     private float dist_to_BlockMax = 7.0f;
     private float dist_to_BlockMin = 3.0f;
     private bool block_Taken = false;
+    private bool Many_block_taken = false;
     public float maxDist;
     public float impulsion;
     private float radiusSelection = 1.0f;
@@ -44,20 +45,20 @@ public class AvatarActions : MonoBehaviour {
 	
 
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (Input.GetKey(KeyCode.Mouse1))
         {
-            radiusSelection += 1 * Time.deltaTime; 
+            radiusSelection *= 1.1f;
+            RadiusSelectionGrowUp();
         }
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
-            Debug.Log(radiusSelection);
-            radiusSelected = Mathf.Lerp(radiusSelected, radiusSelection, 0.1f);
-            SelectionFdbck.rectTransform.localScale = new Vector3(radiusSelected, radiusSelected, 1);
-            if (radiusSelected < 1.2f)
+            if (radiusSelected < 2.0f)
             {
                 if (!block_Taken)
                 {
                     TakeBlock();
+                    radiusSelection = 1.0f;
+                    radiusSelected = radiusSelection;
                 }
                 else
                 {
@@ -65,13 +66,15 @@ public class AvatarActions : MonoBehaviour {
                     LeaveBlock();
                 }
             }
-            if (radiusSelected > 1.2f)
+            if (radiusSelected > 2.0f)
             {
                 TakeSeveralBlock();
+                radiusSelection = 1.0f;
+                radiusSelected = radiusSelection;
             }
         }
 
-        if (block_Taken)
+        if (block_Taken || Many_block_taken)
         {
             if (Input.GetAxis("Mouse ScrollWheel") <0) // Bas
             {
@@ -89,7 +92,17 @@ public class AvatarActions : MonoBehaviour {
                     dist_to_Block = dist_to_BlockMax;
                 }
             }
-            Block_taken_GO.transform.position = transform.position + transform.forward * dist_to_Block;
+            if (block_Taken == true && Many_block_taken == false)
+            {
+                Block_taken_GO.transform.position = transform.position + transform.forward * dist_to_Block;
+            }
+            else if (block_Taken == false && Many_block_taken == true)
+            {
+                foreach (GameObject b in Blocks_taken)
+                {
+                    b.transform.position = transform.position + transform.forward * dist_to_Block;
+                }
+            }
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 ImpulseBlock();
@@ -100,7 +113,7 @@ public class AvatarActions : MonoBehaviour {
             EmitSignal();
         }
 
-        if (!block_Taken)
+        if (!block_Taken || !Many_block_taken)
         {
             if (Input.GetAxis("Mouse ScrollWheel") < 0) // Bas
             {
@@ -141,22 +154,42 @@ public class AvatarActions : MonoBehaviour {
             block_Taken = true;
             Block_taken_GO = target;
             Block_taken_GO.BroadcastMessage("OnHold");
-			BanqueSons.Catch.start ();
+			BanqueSons.Catch.start();
         }
     }
 
     private void TakeSeveralBlock()
     {
-        Vector3 maxDistVector = transform.position + cam.forward * maxDist;
-        Collider[] cols = Physics.OverlapCapsule(transform.position, maxDistVector, radiusSelection);
-        for (int i =0; i < cols.Length; i++)
-        {
-            Blocks_taken[i] = cols[i].gameObject;
-        }
+        if (SeveralPickable(out Blocks_taken) == true)
+        Many_block_taken = true;
         foreach (GameObject a in Blocks_taken)
         {
-            a.transform.position = transform.position + transform.forward * dist_to_Block;
+            a.BroadcastMessage("OnHold");
+            //BanqueSons.Catch.start();
         }
+    }
+
+    private bool SeveralPickable(out GameObject[] Blocks)
+    {
+        Vector3 maxDistVector = transform.position + cam.forward * maxDist;
+        Collider[] cols = Physics.OverlapCapsule(transform.position, maxDistVector, radiusSelected);
+        if (cols != null)
+        {
+            for (int i = 0; i < cols.Length; i ++) 
+            {
+                Blocks_taken[i] = cols[i].gameObject;
+            }
+            Blocks = Blocks_taken;
+            return true;
+        }
+        Blocks = null;
+        return false;
+    }
+
+    private void RadiusSelectionGrowUp()
+    {
+        radiusSelected = Mathf.Lerp(radiusSelected, radiusSelection, 0.1f);
+        SelectionFdbck.rectTransform.localScale = new Vector3(radiusSelected, radiusSelected, 1);
     }
 
     private void LeaveBlock()
