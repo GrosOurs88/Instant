@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AvatarActions : MonoBehaviour {
 
@@ -22,6 +23,7 @@ public class AvatarActions : MonoBehaviour {
     private float signalRadiusMax = 5.0f;
     private float signalRadiusMin = 1.0f;
     public float signalEvolve = 1.0f;
+    public Image SignalFdbck; 
 
     private float manaMax = 10.0f;
     private float mana;
@@ -62,11 +64,13 @@ public class AvatarActions : MonoBehaviour {
         {
             signalEvolve -= 0.1f;
             radiusSignal = Mathf.Lerp(signalRadiusMin, radiusSignal, signalEvolve);
+            SignalFdbck.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
         }
         if (Input.GetAxis("Mouse ScrollWheel") >0) // Haut
         {
             signalEvolve += 0.1f;
             radiusSignal = Mathf.Lerp(radiusSignal, signalRadiusMax, signalEvolve);
+            SignalFdbck.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
         }
     }
 
