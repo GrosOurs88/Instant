@@ -38,17 +38,29 @@ public class AvatarActions : MonoBehaviour {
     private float timerE = 1.5f;
 
     [Header("Resources")]
-    private float manaMax = 10.0f;
-    private float mana;
+    private int manaMax = 100;
+    private int manaCurrent;
+    private int manaWorth = 0;
+    private int manaUsed = 0;
+    public Text manaC;
+    public Text manaW;
+    public Text manaM;
 
 	void Start () {
         cam = gameObject.GetComponent<Camera>().transform;
-        mana = manaMax;
+        manaCurrent = manaMax;
         All_Blocks = GameObject.FindGameObjectsWithTag("Block");
 	}
 	
 
 	void Update () {
+        ManaDistribution();
+
+        if (manaWorth > manaCurrent)
+        {
+            canEmitSignal = false;
+        }
+
         if (Input.GetKey(KeyCode.E))
         {
             timerE -= Time.deltaTime;
@@ -59,14 +71,15 @@ public class AvatarActions : MonoBehaviour {
                     e.BroadcastMessage("OnDesactivationSignal");
                 }
                 timerE = 1.5f;
+                manaCurrent = manaMax;
             }
-
         }
 
         if (Input.GetKey(KeyCode.Mouse1))
         {
             radiusSelection *= 1.01f;
             RadiusSelectionGrowUp();
+            ManaDistribution();
         }
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
@@ -150,12 +163,14 @@ public class AvatarActions : MonoBehaviour {
                 signalEvolve -= 0.1f;
                 radiusSignal = Mathf.Lerp(signalRadiusMin, radiusSignal, signalEvolve);
                 SignalFdbck.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
+                ManaDistribution();
             }
             if (Input.GetAxis("Mouse ScrollWheel") > 0) // Haut
             {
                 signalEvolve += 0.1f;
                 radiusSignal = Mathf.Lerp(radiusSignal, signalRadiusMax, signalEvolve);
                 SignalFdbck.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
+                ManaDistribution();
             }
         }
     }
@@ -228,6 +243,8 @@ public class AvatarActions : MonoBehaviour {
     {
         radiusSelected = Mathf.Lerp(radiusSelected, radiusSelection, 0.1f);
         SelectionFdbck.rectTransform.localScale = new Vector3(radiusSelected, radiusSelected, 1);
+
+        ManaDistribution();
     }
 
     private void LeaveBlock()
@@ -273,8 +290,35 @@ public class AvatarActions : MonoBehaviour {
                 col.BroadcastMessage("OnSignal");
             }
             BanqueSons.Signal.start ();
+            manaCurrent -= manaWorth;
         }
     }
+
+    private void ManaDistribution()
+    {
+        if (radiusSelected >= 1.0f || radiusSelected < 1.4f)
+        {
+            manaWorth = 5;
+        }
+        if (radiusSelected >= 1.5f && radiusSelected < 2.9f)
+        {
+            manaWorth = 10;
+        }
+        if (radiusSelected >= 3.0f && radiusSelected < 4.9f)
+        {
+            manaWorth = 20;
+        }
+        if (radiusSelected == 5.0f)
+        {
+            manaWorth = 30;
+        }
+
+        manaM.text = "Ressources Max :" + manaM.ToString();
+        manaC.text = "Ressources Actuelles :" + manaCurrent.ToString();
+        manaUsed = manaCurrent - manaWorth;
+        manaW.text = "Ressources Restantes après action :" + manaUsed.ToString();
+    }
+
 
     private IEnumerator SignalTimer()
     {
