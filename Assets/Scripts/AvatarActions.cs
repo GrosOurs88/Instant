@@ -11,8 +11,6 @@ public class AvatarActions : MonoBehaviour {
     private GameObject Block_taken_GO = null;
     public List<GameObject> Blocks_taken = new List<GameObject>();
     private List<GameObject> Blocks = new List<GameObject>();
-    public GameObject PointBlocks;
-    private GameObject PointToFollow = null;
     public float dist_to_Block = 5.0f;
     private float dist_to_BlockMax = 7.0f;
     private float dist_to_BlockMin = 3.0f;
@@ -113,10 +111,9 @@ public class AvatarActions : MonoBehaviour {
             }
             else if (block_Taken == false && Many_block_taken == true)
             {
-                PointToFollow = Instantiate(PointBlocks, transform.position + transform.forward * dist_to_Block, Quaternion.identity);
                 foreach (GameObject b in Blocks_taken)
                 {
-                    b.transform.position = PointToFollow.transform.position;
+                    b.transform.position = transform.position + transform.forward * dist_to_Block;
                 }
             }
             if (Input.GetKeyDown(KeyCode.Mouse0))
