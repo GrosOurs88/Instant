@@ -9,8 +9,8 @@ public class AvatarActions : MonoBehaviour {
     private Transform cam;
     private GameObject target = null;
     private GameObject Block_taken_GO = null;
-    public GameObject[] Blocks_taken;
-    private GameObject[] Blocks = null;
+    public List<GameObject> Blocks_taken = new List<GameObject>();
+    private List<GameObject> Blocks = new List<GameObject>();
     public GameObject PointBlocks;
     private GameObject PointToFollow = null;
     public float dist_to_Block = 5.0f;
@@ -177,17 +177,20 @@ public class AvatarActions : MonoBehaviour {
     private void TakeSeveralBlock()
     {
         if (SeveralPickable(out Blocks) == true)
-        Many_block_taken = true;
-        Blocks_taken = Blocks;
-        foreach (GameObject a in Blocks_taken)
         {
-            a.BroadcastMessage("OnHold");
-            //BanqueSons.Catch.start();
+            Many_block_taken = true;
+            Blocks_taken = Blocks;
+            foreach (GameObject a in Blocks_taken)
+            {
+                a.BroadcastMessage("OnHold");
+                //BanqueSons.Catch.start();
+            }
         }
     }
 
-    private bool SeveralPickable(out GameObject[] Blocks)
+    private bool SeveralPickable(out List<GameObject> Blocks)
     {
+        Blocks = new List<GameObject>();
         Vector3 maxDistVector = transform.position + cam.forward * maxDist;
         Collider[] cols = Physics.OverlapCapsule(transform.position, maxDistVector, radiusSelected);
         if (cols != null)
@@ -197,13 +200,13 @@ public class AvatarActions : MonoBehaviour {
                 if (cols[i].gameObject.tag == "Block")
                 {
                     Debug.Log(cols[i]);
-                    Blocks_taken[i] = cols[i].gameObject;
+                    Blocks_taken.Add(cols[i].gameObject);
                 }
             }
             Blocks = Blocks_taken;
             return true;
         }
-        Blocks = null;
+        Blocks.Clear();
         return false;
     }
 
@@ -218,7 +221,7 @@ public class AvatarActions : MonoBehaviour {
         block_Taken = false;
         Block_taken_GO = null;
         Many_block_taken = false;
-        Blocks_taken = null;
+        Blocks_taken.Clear();
     }
 
     private void ImpulseBlock()
