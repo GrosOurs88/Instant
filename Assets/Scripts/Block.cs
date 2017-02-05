@@ -29,7 +29,7 @@ public class Block : MonoBehaviour
     private float signalsLeft;
     private bool isTimerRunning = false;
 
-    private static bool autoUnfix = true;
+    private static bool autoUnfix = false;
 
     private void Start()
     {   

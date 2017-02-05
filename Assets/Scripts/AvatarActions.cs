@@ -33,7 +33,9 @@ public class AvatarActions : MonoBehaviour {
     private float signalRadiusMax = 5.0f;
     private float signalRadiusMin = 1.0f;
     public float signalEvolve = 1.0f;
-    public Image SignalFdbck; 
+    public Image SignalFdbck;
+    public GameObject[] All_Blocks = new GameObject[10];
+    private float timerE = 1.5f;
 
     [Header("Resources")]
     private float manaMax = 10.0f;
@@ -42,10 +44,25 @@ public class AvatarActions : MonoBehaviour {
 	void Start () {
         cam = gameObject.GetComponent<Camera>().transform;
         mana = manaMax;
+        All_Blocks = GameObject.FindGameObjectsWithTag("Block");
 	}
 	
 
 	void Update () {
+        if (Input.GetKey(KeyCode.E))
+        {
+            timerE -= Time.deltaTime;
+            if (timerE < 0.0f)
+            {
+                foreach (GameObject e in All_Blocks)
+                {
+                    e.BroadcastMessage("OnDesactivationSignal");
+                }
+                timerE = 1.5f;
+            }
+
+        }
+
         if (Input.GetKey(KeyCode.Mouse1))
         {
             radiusSelection *= 1.01f;
