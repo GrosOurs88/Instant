@@ -236,9 +236,9 @@ public class AvatarActions : MonoBehaviour {
             {
                 d.BroadcastMessage("OnHold");
                 d.GetComponent<Rigidbody>().AddForce(transform.forward * impulsion, ForceMode.Impulse);
-                LeaveBlock();
                 BanqueSons.Throw.start();
             }
+            LeaveBlock();
         }
     }
 
