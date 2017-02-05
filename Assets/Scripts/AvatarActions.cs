@@ -9,7 +9,10 @@ public class AvatarActions : MonoBehaviour {
     private Transform cam;
     private GameObject target = null;
     private GameObject Block_taken_GO = null;
-    private GameObject[] Blocks_taken;
+    public GameObject[] Blocks_taken;
+    private GameObject[] Blocks = null;
+    public GameObject PointBlocks;
+    private GameObject PointToFollow = null;
     public float dist_to_Block = 5.0f;
     private float dist_to_BlockMax = 7.0f;
     private float dist_to_BlockMin = 3.0f;
@@ -47,7 +50,7 @@ public class AvatarActions : MonoBehaviour {
 	void Update () {
         if (Input.GetKey(KeyCode.Mouse1))
         {
-            radiusSelection *= 1.1f;
+            radiusSelection *= 1.01f;
             RadiusSelectionGrowUp();
         }
         if (Input.GetKeyUp(KeyCode.Mouse1))
@@ -68,9 +71,21 @@ public class AvatarActions : MonoBehaviour {
             }
             if (radiusSelected > 2.0f)
             {
-                TakeSeveralBlock();
-                radiusSelection = 1.0f;
-                radiusSelected = radiusSelection;
+                if (!Many_block_taken)
+                {
+                    TakeSeveralBlock();
+                    radiusSelection = 1.0f;
+                    radiusSelected = radiusSelection;
+                }
+                else
+                {
+                    foreach (GameObject c in Blocks_taken)
+                    {
+                        c.BroadcastMessage("OnHold");
+                        LeaveBlock();
+                    }
+                       
+                }
             }
         }
 
@@ -98,9 +113,10 @@ public class AvatarActions : MonoBehaviour {
             }
             else if (block_Taken == false && Many_block_taken == true)
             {
+                PointToFollow = Instantiate(PointBlocks, transform.position + transform.forward * dist_to_Block, Quaternion.identity);
                 foreach (GameObject b in Blocks_taken)
                 {
-                    b.transform.position = transform.position + transform.forward * dist_to_Block;
+                    b.transform.position = PointToFollow.transform.position;
                 }
             }
             if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -160,8 +176,9 @@ public class AvatarActions : MonoBehaviour {
 
     private void TakeSeveralBlock()
     {
-        if (SeveralPickable(out Blocks_taken) == true)
+        if (SeveralPickable(out Blocks) == true)
         Many_block_taken = true;
+        Blocks_taken = Blocks;
         foreach (GameObject a in Blocks_taken)
         {
             a.BroadcastMessage("OnHold");
@@ -177,7 +194,11 @@ public class AvatarActions : MonoBehaviour {
         {
             for (int i = 0; i < cols.Length; i ++) 
             {
-                Blocks_taken[i] = cols[i].gameObject;
+                if (cols[i].gameObject.tag == "Block")
+                {
+                    Debug.Log(cols[i]);
+                    Blocks_taken[i] = cols[i].gameObject;
+                }
             }
             Blocks = Blocks_taken;
             return true;
@@ -196,14 +217,29 @@ public class AvatarActions : MonoBehaviour {
     {
         block_Taken = false;
         Block_taken_GO = null;
+        Many_block_taken = false;
+        Blocks_taken = null;
     }
 
     private void ImpulseBlock()
     {
-        Block_taken_GO.BroadcastMessage("OnHold");
-        Block_taken_GO.GetComponent<Rigidbody>().AddForce(transform.forward * impulsion, ForceMode.Impulse);
-        LeaveBlock();
-		BanqueSons.Throw.start ();
+        if (block_Taken == true)
+        {
+            Block_taken_GO.BroadcastMessage("OnHold");
+            Block_taken_GO.GetComponent<Rigidbody>().AddForce(transform.forward * impulsion, ForceMode.Impulse);
+            LeaveBlock();
+            BanqueSons.Throw.start();
+        }
+        else if (Many_block_taken == true)
+        {
+            foreach (GameObject d in Blocks_taken)
+            {
+                d.BroadcastMessage("OnHold");
+                d.GetComponent<Rigidbody>().AddForce(transform.forward * impulsion, ForceMode.Impulse);
+                LeaveBlock();
+                BanqueSons.Throw.start();
+            }
+        }
     }
 
     private void EmitSignal()
