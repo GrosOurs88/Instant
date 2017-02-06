@@ -60,6 +60,11 @@ public class AvatarActions : MonoBehaviour {
         {
             canEmitSignal = false;
         }
+        else
+        {
+            canEmitSignal = true;
+        }
+
 
         if (Input.GetKey(KeyCode.E))
         {
@@ -296,22 +301,7 @@ public class AvatarActions : MonoBehaviour {
 
     private void ManaDistribution()
     {
-        if (radiusSelected >= 1.0f || radiusSelected < 1.4f)
-        {
-            manaWorth = 5;
-        }
-        if (radiusSelected >= 1.5f && radiusSelected < 2.9f)
-        {
-            manaWorth = 10;
-        }
-        if (radiusSelected >= 3.0f && radiusSelected < 4.9f)
-        {
-            manaWorth = 20;
-        }
-        if (radiusSelected == 5.0f)
-        {
-            manaWorth = 30;
-        }
+        manaWorth = (int) Mathf.Lerp(5.0f, 30.0f, (radiusSignal - 1.0f) / (signalRadiusMax-1.0f));
 
         manaM.text = "Ressources Max :" + manaM.ToString();
         manaC.text = "Ressources Actuelles :" + manaCurrent.ToString();
