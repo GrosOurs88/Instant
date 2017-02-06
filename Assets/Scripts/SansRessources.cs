@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AvatarActions : MonoBehaviour {
+public class SansRessources : MonoBehaviour {
 
     [Header("Block Manipulation")]
     private Transform cam;
@@ -37,24 +37,26 @@ public class AvatarActions : MonoBehaviour {
     public GameObject[] All_Blocks = new GameObject[10];
     private float timerE = 1.5f;
 
-    [Header("Resources")]
+    /*[Header("Resources")]
     private int manaMax = 100;
     private int manaCurrent;
     private int manaWorth = 0;
     private int manaUsed = 0;
     public Text manaC;
     public Text manaW;
-    public Text manaM;
+    public Text manaM;*/
 
-	void Start () {
+    void Start()
+    {
         cam = gameObject.GetComponent<Camera>().transform;
-        manaCurrent = manaMax;
+        //manaCurrent = manaMax;
         All_Blocks = GameObject.FindGameObjectsWithTag("Block");
-	}
-	
+    }
 
-	void Update () {
-        ManaDistribution();
+
+    void Update()
+    {
+        /*ManaDistribution();
 
         if (manaWorth > manaCurrent)
         {
@@ -63,7 +65,7 @@ public class AvatarActions : MonoBehaviour {
         else
         {
             canEmitSignal = true;
-        }
+        }*/
 
 
         if (Input.GetKey(KeyCode.E))
@@ -76,7 +78,7 @@ public class AvatarActions : MonoBehaviour {
                     e.BroadcastMessage("OnDesactivationSignal");
                 }
                 timerE = 1.5f;
-                manaCurrent = manaMax;
+                //manaCurrent = manaMax;
             }
         }
 
@@ -84,7 +86,7 @@ public class AvatarActions : MonoBehaviour {
         {
             radiusSelection *= 1.01f;
             RadiusSelectionGrowUp();
-            ManaDistribution();
+            //ManaDistribution();
         }
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
@@ -117,14 +119,14 @@ public class AvatarActions : MonoBehaviour {
                         c.BroadcastMessage("OnHold");
                         LeaveBlock();
                     }
-                       
+
                 }
             }
         }
 
         if (block_Taken || Many_block_taken)
         {
-            if (Input.GetAxis("Mouse ScrollWheel") <0) // Bas
+            if (Input.GetAxis("Mouse ScrollWheel") < 0) // Bas
             {
                 dist_to_Block -= 0.5f;
                 if (dist_to_Block < dist_to_BlockMin)
@@ -132,7 +134,7 @@ public class AvatarActions : MonoBehaviour {
                     dist_to_Block = dist_to_BlockMin;
                 }
             }
-            if (Input.GetAxis("Mouse ScrollWheel") >0) //Haut
+            if (Input.GetAxis("Mouse ScrollWheel") > 0) //Haut
             {
                 dist_to_Block += 0.5f;
                 if (dist_to_Block > dist_to_BlockMax)
@@ -168,21 +170,21 @@ public class AvatarActions : MonoBehaviour {
                 signalEvolve -= 0.1f;
                 radiusSignal = Mathf.Lerp(signalRadiusMin, radiusSignal, signalEvolve);
                 SignalFdbck.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
-                ManaDistribution();
+                //ManaDistribution();
             }
             if (Input.GetAxis("Mouse ScrollWheel") > 0) // Haut
             {
                 signalEvolve += 0.1f;
                 radiusSignal = Mathf.Lerp(radiusSignal, signalRadiusMax, signalEvolve);
                 SignalFdbck.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
-                ManaDistribution();
+                //ManaDistribution();
             }
         }
     }
 
     private bool Pickable(out GameObject Block) // Vérifie si un Block peut être saisi dans la distance maxDist
     {
-        Ray r = new Ray(transform.position + cam.forward*0.5f, cam.forward);
+        Ray r = new Ray(transform.position + cam.forward * 0.5f, cam.forward);
         RaycastHit hit;
         int layer_mask = Physics.DefaultRaycastLayers;
         if (Physics.Raycast(r, out hit, maxDist, layer_mask))
@@ -204,7 +206,7 @@ public class AvatarActions : MonoBehaviour {
             block_Taken = true;
             Block_taken_GO = target;
             Block_taken_GO.BroadcastMessage("OnHold");
-			BanqueSons.Catch.start();
+            BanqueSons.Catch.start();
         }
     }
 
@@ -229,7 +231,7 @@ public class AvatarActions : MonoBehaviour {
         Collider[] cols = Physics.OverlapCapsule(transform.position, maxDistVector, radiusSelected);
         if (cols != null)
         {
-            for (int i = 0; i < cols.Length; i ++) 
+            for (int i = 0; i < cols.Length; i++)
             {
                 if (cols[i].gameObject.tag == "Block")
                 {
@@ -249,7 +251,7 @@ public class AvatarActions : MonoBehaviour {
         radiusSelected = Mathf.Lerp(radiusSelected, radiusSelection, 0.1f);
         SelectionFdbck.rectTransform.localScale = new Vector3(radiusSelected, radiusSelected, 1);
 
-        ManaDistribution();
+        //ManaDistribution();
     }
 
     private void LeaveBlock()
@@ -294,20 +296,21 @@ public class AvatarActions : MonoBehaviour {
             {
                 col.BroadcastMessage("OnSignal");
             }
-            BanqueSons.Signal.start ();
-            manaCurrent -= manaWorth;
+            BanqueSons.Signal.start();
+            //manaCurrent -= manaWorth;
         }
     }
 
-    private void ManaDistribution()
+    /*private void ManaDistribution()
     {
-        manaWorth = (int) Mathf.Lerp(5.0f, 30.0f, (radiusSignal - 1.0f) / (signalRadiusMax-1.0f));
+        manaWorth = (int)Mathf.Lerp(5.0f, 30.0f, (radiusSignal - 1.0f) / (signalRadiusMax - 1.0f));
 
         manaM.text = "Ressources Max :" + manaM.ToString();
         manaC.text = "Ressources Actuelles :" + manaCurrent.ToString();
         manaUsed = manaCurrent - manaWorth;
         manaW.text = "Ressources Restantes après action :" + manaUsed.ToString();
-    }
+    }*/
+
 
     private IEnumerator SignalTimer()
     {
