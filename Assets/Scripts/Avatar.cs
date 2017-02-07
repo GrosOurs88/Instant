@@ -26,7 +26,7 @@ public class Avatar : MonoBehaviour {
     [Header("Signal Parameters")] // Manque l'Image Signal Feedback
     private bool canEmitSignal = true;
     public float signalTimer;
-    private float radiusSignal = 1.0f;
+    public float radiusSignal = 1.0f;
     private float signalEvolve = 1.0f;
 
     public GameObject[] AllBlocks = new GameObject[50];
@@ -34,13 +34,13 @@ public class Avatar : MonoBehaviour {
     // A virer ou pas ? 
     public float signalRange = 5.0f;
 
-    [Header("Resources")] // VALIDE
+    /*[Header("Resources")] // VALIDE
     private int manaMax = 100;
     private int manaCurrent;
     private int manaWillBeUsed = 0;
     public Text CurrentMana;
     public Text UsedMana;
-    public Text MaxMana;
+    public Text MaxMana;*/
 
 
     /* 
@@ -68,7 +68,7 @@ public class Avatar : MonoBehaviour {
     private void Start()
     {
         cam = gameObject.GetComponent<Camera>().transform;
-        manaCurrent = manaMax;
+        //manaCurrent = manaMax;
         AllBlocks = GameObject.FindGameObjectsWithTag("Block");
     }
 
@@ -76,7 +76,7 @@ public class Avatar : MonoBehaviour {
     {
 
         //// Gestion du mana ////
-        ManaUpdate();
+        /*ManaUpdate();
         if (manaWillBeUsed > manaCurrent)
         {
             canEmitSignal = false;
@@ -84,7 +84,7 @@ public class Avatar : MonoBehaviour {
         else
         {
             canEmitSignal = true;
-        }
+        }*/
 
         //// Pour défiger tous les blocks ////
         if (Input.GetKey(KeyCode.E))
@@ -98,7 +98,7 @@ public class Avatar : MonoBehaviour {
                     a.BroadcastMessage("OnDesactivationSignal");
                 }
                 timerE = 1.5f;
-                manaCurrent = manaMax;
+                //manaCurrent = manaMax;
             }
         }
 
@@ -124,7 +124,7 @@ public class Avatar : MonoBehaviour {
                         LeaveBlock();
                     }
                 }
-                if (radiusSelectionEvolve < 2.0f)
+                if (radiusSelectionEvolve > 2.0f)
                 {
                     if (manyBlocksHold == false)
                     {
@@ -350,7 +350,7 @@ public class Avatar : MonoBehaviour {
                 col.BroadcastMessage("OnSignal");
             }
             BanqueSons.Signal.start();
-            manaCurrent -= manaWillBeUsed;
+            //manaCurrent -= manaWillBeUsed;
         }
     } 
 
@@ -364,17 +364,17 @@ public class Avatar : MonoBehaviour {
     {
         float radiusSignalMin = 1.0f;
         radiusSignal = Mathf.Lerp(radiusSignalMin, radiusSignal, signalEvolve);
-        ManaUpdate();
+        //ManaUpdate();
     }
 
     private void SignalGrow()
     {
         float radiusSignalMax = 5.0f;
         radiusSignal = Mathf.Lerp(radiusSignal, radiusSignalMax, signalEvolve);
-        ManaUpdate();
+        //ManaUpdate();
     }
 
-    private void ManaUpdate()
+    /*private void ManaUpdate()
     {
         manaWillBeUsed = (int)Mathf.Lerp(5.0f, 30.0f, (radiusSignal - 1.0f) / 4.0f);
 
@@ -383,5 +383,5 @@ public class Avatar : MonoBehaviour {
         int manaUsed = 0;
         manaUsed = manaCurrent - manaWillBeUsed;
         UsedMana.text = "Ressources restantes après action :" + manaUsed.ToString();
-    }
+    }*/
 }
