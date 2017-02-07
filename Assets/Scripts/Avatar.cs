@@ -159,9 +159,9 @@ public class Avatar : MonoBehaviour {
             if (Input.GetAxis("Mouse ScrollWheel") > 0) // Scroll vers le haut
             {
                 distToBlock += 0.5f; // Idem puisque même variable
-                if (distToBlock > 7.0f)
+                if (distToBlock > 10.0f)
                 {
-                    distToBlock = 7.0f;
+                    distToBlock = 10.0f;
                 }
             }
 
