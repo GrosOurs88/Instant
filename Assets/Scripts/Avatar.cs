@@ -27,9 +27,10 @@ public class Avatar : MonoBehaviour {
     private bool canEmitSignal = true;
     public float signalTimer;
     public float radiusSignal = 1.0f;
-    private float signalEvolve = 1.0f;
+    public Image SignalFeedbackVisuel;
 
     public GameObject[] AllBlocks = new GameObject[50];
+    private float timerE = 1.5f;
 
     // A virer ou pas ? 
     public float signalRange = 5.0f;
@@ -74,6 +75,7 @@ public class Avatar : MonoBehaviour {
 
     private void Update()
     {
+        SignalFeedbackVisuel.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
 
         //// Gestion du mana ////
         /*ManaUpdate();
@@ -89,7 +91,6 @@ public class Avatar : MonoBehaviour {
         //// Pour défiger tous les blocks ////
         if (Input.GetKey(KeyCode.E))
         {
-            float timerE = 1.5f;
             timerE -= Time.deltaTime;
             if (timerE < 0.0f)
             {
@@ -212,7 +213,7 @@ public class Avatar : MonoBehaviour {
 
 
         //// Lorsqu'aucun block n'est saisi ////
-        if (OneBlockTaken == false)
+        /*if (OneBlockTaken == false)
         {
             if (Input.GetAxis("Mouse ScrollWheel") < 0) // Scroll vers le bas 
             {
@@ -226,7 +227,7 @@ public class Avatar : MonoBehaviour {
                 SignalGrow();
                 // Ajouter Image Feedback evolution
             }
-        }
+        }*/
 
     }
 
@@ -360,19 +361,19 @@ public class Avatar : MonoBehaviour {
         canEmitSignal = true;
     }
 
-    private void SignalShrink()
+    /*private void SignalShrink()
     {
         float radiusSignalMin = 1.0f;
         radiusSignal = Mathf.Lerp(radiusSignalMin, radiusSignal, signalEvolve);
         //ManaUpdate();
-    }
+    }*/
 
-    private void SignalGrow()
+    /*private void SignalGrow()
     {
         float radiusSignalMax = 5.0f;
         radiusSignal = Mathf.Lerp(radiusSignal, radiusSignalMax, signalEvolve);
         //ManaUpdate();
-    }
+    }*/
 
     /*private void ManaUpdate()
     {
