@@ -315,7 +315,7 @@ public class Avatar : MonoBehaviour {
         if (oneBlockHold == true)
         {
             OneBlockTaken.BroadcastMessage("OnHold");
-            OneBlockTaken.GetComponent<Rigidbody>().AddForce(transform.forward * impulsion, ForceMode.Impulse);
+			OneBlockTaken.GetComponent<Rigidbody> ().velocity = transform.forward * impulsion;
             LeaveBlock();
             BanqueSons.Throw.start();
         }
