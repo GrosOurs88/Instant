@@ -28,6 +28,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
 
+        /// <summary>
+        /// Attika Modification's
+        /// </summary>
+        [SerializeField] private float TriggerDistance = 2.0f;
+        [SerializeField] private float myPosInitial;
+        [SerializeField] private bool canBump = false;
+        [SerializeField] private Rigidbody rb;
+        public float force = 100.0f;
+        public float radius = 10.0f;
+
         private Camera m_Camera;
         private bool m_Jump;
         private float m_YRotation;
@@ -55,6 +65,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
+
+            rb = gameObject.GetComponent<Rigidbody>();
         }
 
 
@@ -70,10 +82,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
             {
+                myPosInitial = transform.position.y;
                 StartCoroutine(m_JumpBob.DoBobCycle());
                 PlayLandingSound();
                 m_MoveDir.y = 0f;
                 m_Jumping = false;
+                if (canBump)
+                {
+                        Bump();
+                }
             }
             if (!m_CharacterController.isGrounded && !m_Jumping && m_PreviouslyGrounded)
             {
@@ -125,12 +142,32 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 m_MoveDir += Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
             }
+
+            if (m_Jumping)
+            {
+                float myYPos = transform.position.y;
+                if (myYPos < myPosInitial + TriggerDistance)
+                {
+                    canBump = true;
+                }
+                else
+                {
+                    canBump = false;
+                }
+            }
+
             m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
 
             ProgressStepCycle(speed);
             UpdateCameraPosition(speed);
 
             m_MouseLook.UpdateCursorLock();
+        }
+
+        private void Bump()
+        {
+            rb.AddExplosionForce(force, transform.position, radius);
+            canBump = false;
         }
 
 

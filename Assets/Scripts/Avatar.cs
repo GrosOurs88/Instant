@@ -31,24 +31,13 @@ public class Avatar : MonoBehaviour {
 
     public GameObject[] AllBlocks = new GameObject[50];
     private float timerE = 1.5f;
-
-    // A virer ou pas ? 
     public float signalRange = 5.0f;
-
-    /*[Header("Resources")] // VALIDE
-    private int manaMax = 100;
-    private int manaCurrent;
-    private int manaWillBeUsed = 0;
-    public Text CurrentMana;
-    public Text UsedMana;
-    public Text MaxMana;*/
-
-
+    
     /* 
         - On peut vérifier qu'un block est saissisable, 
         saisir un block, 
         le relâcher,
-        faire varier la distance entre nous et le block lorsque saisi,
+        faire varier la distance entre nous et le block lorsque saisi (distance max et min modifiable),
         lui donner une impulsion
 
         - On peut vérifier que plusieurs blocks sont saissisables,
@@ -57,10 +46,7 @@ public class Avatar : MonoBehaviour {
         faire varier la distance entre nous et les blocks lorsque saisis,
         leur donner une impulsion
 
-        - On peut envoyer un signal,
-        faire varier la taille du signal émis lorsqu'aucun block saisi
-
-        - Le mana est fonctionnel
+        - On peut envoyer un signal (taille réglable dans l'inspecteur)
 
         - On peut défiger tous les blocks
          */
