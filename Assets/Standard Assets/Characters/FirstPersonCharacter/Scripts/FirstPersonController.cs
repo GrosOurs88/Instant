@@ -78,19 +78,19 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (!m_Jump)
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
+                myPosInitial = transform.position.y;
             }
 
             if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
             {
-                myPosInitial = transform.position.y;
+                if (canBump)
+                {
+                    Bump();
+                }
                 StartCoroutine(m_JumpBob.DoBobCycle());
                 PlayLandingSound();
                 m_MoveDir.y = 0f;
                 m_Jumping = false;
-                if (canBump)
-                {
-                        Bump();
-                }
             }
             if (!m_CharacterController.isGrounded && !m_Jumping && m_PreviouslyGrounded)
             {
@@ -167,6 +167,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private void Bump()
         {
             rb.AddExplosionForce(force, transform.position, radius);
+            Debug.Log("Bumping !");
             canBump = false;
         }
 
