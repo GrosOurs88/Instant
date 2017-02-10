@@ -25,7 +25,7 @@ public class Wind : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             active = !active;
         }

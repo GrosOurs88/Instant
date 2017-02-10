@@ -34,7 +34,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private float TriggerDistance = 2.0f;
         [SerializeField] private float myPosInitial;
         [SerializeField] private bool canBump = false;
-        [SerializeField] private Rigidbody rb;
         public float force = 100.0f;
         public float radius = 10.0f;
 
@@ -65,8 +64,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
-
-            rb = gameObject.GetComponent<Rigidbody>();
         }
 
 
@@ -166,8 +163,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void Bump()
         {
-            rb.AddExplosionForce(force, transform.position, radius);
-            Debug.Log("Bumping !");
+            Collider[] Blocks = Physics.OverlapSphere(transform.position, radius);
+            foreach (Collider col in Blocks)
+            {
+                Rigidbody rbs = col.gameObject.GetComponent<Rigidbody>();
+                if (rbs != null)
+                {
+                    rbs.AddExplosionForce(force, transform.position, radius);
+                    Debug.Log("Bumping !");
+                }
+            }
             canBump = false;
         }
 
