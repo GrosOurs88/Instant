@@ -175,7 +175,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 if (rbs != null)
                 {
                     rbs.AddExplosionForce(force, transform.position, radius);
-                    Debug.Log("Bumping !");
                 }
             }
             canBump = false;
