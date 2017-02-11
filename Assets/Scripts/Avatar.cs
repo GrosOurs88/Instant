@@ -21,9 +21,10 @@ public class Avatar : MonoBehaviour {
     public float maxDistToGrab;
     public float distToBlock = 5.0f;
     
-    public float impulsion;
+    private float impulsion = 5.0f;
+    private float clicked = 0.0f;
 
-    [Header("Signal Parameters")] // Manque l'Image Signal Feedback
+    [Header("Signal Parameters")] 
     private bool canEmitSignal = true;
     public float signalTimer;
     public float radiusSignal = 1.0f;
@@ -61,7 +62,7 @@ public class Avatar : MonoBehaviour {
 
     private void Update()
     {
-        //SignalFeedbackVisuel.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
+        SignalFeedbackVisuel.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
 
         //// Gestion du mana ////
         /*ManaUpdate();
@@ -153,7 +154,16 @@ public class Avatar : MonoBehaviour {
 
             OneBlockTaken.transform.position = transform.position + transform.forward * distToBlock;
 
-            if (Input.GetKey(KeyCode.Mouse0))
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                clicked += 0.01f;
+                if (clicked > 1.0f)
+                {
+                    clicked = 1.0f;
+                }
+                impulsion = (int)Mathf.Lerp(5.0f, 40.0f, clicked);
+            }
+            if (Input.GetKeyUp(KeyCode.Mouse0))
             {
                 ImpulseBlock();
             }
@@ -302,8 +312,11 @@ public class Avatar : MonoBehaviour {
         {
             OneBlockTaken.BroadcastMessage("OnHold");
 			OneBlockTaken.GetComponent<Rigidbody> ().velocity = transform.forward * impulsion;
+            Debug.Log(impulsion);
             LeaveBlock();
             //BanqueSons.Throw.start();
+            impulsion = 5.0f;
+            clicked = 0.0f;
         }
     }
 
