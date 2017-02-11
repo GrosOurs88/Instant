@@ -34,6 +34,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private float TriggerDistance = 2.0f;
         [SerializeField] private float myPosInitial;
         [SerializeField] private bool canBump = false;
+        [SerializeField] private float forceDown = -5.0f;
         public float force = 100.0f;
         public float radius = 10.0f;
 
@@ -64,6 +65,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
+
+            myPosInitial = transform.position.y;
         }
 
 
@@ -75,7 +78,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (!m_Jump)
             {
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
-                myPosInitial = transform.position.y;
             }
 
             if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
@@ -140,12 +142,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_MoveDir += Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
             }
 
-            if (m_Jumping)
+            if (!m_CharacterController.isGrounded)
             {
                 float myYPos = transform.position.y;
                 if (myYPos < myPosInitial + TriggerDistance)
                 {
-                    canBump = true;
+                    if (CrossPlatformInputManager.GetButtonDown("Jump"))
+                    {
+                        m_MoveDir.y = m_JumpSpeed * forceDown;
+                        canBump = true;
+                    }
                 }
                 else
                 {
