@@ -147,7 +147,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 float myYPos = transform.position.y;
                 if (myYPos < myPosInitial + TriggerDistance)
                 {
-                    if (CrossPlatformInputManager.GetButtonDown("Jump"))
+                    if (Input.GetKey(KeyCode.LeftControl))
                     {
                         m_MoveDir.y = m_JumpSpeed * forceDown;
                         canBump = true;

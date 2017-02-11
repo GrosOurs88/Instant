@@ -61,7 +61,7 @@ public class Avatar : MonoBehaviour {
 
     private void Update()
     {
-        SignalFeedbackVisuel.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
+        //SignalFeedbackVisuel.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
 
         //// Gestion du mana ////
         /*ManaUpdate();
@@ -263,7 +263,7 @@ public class Avatar : MonoBehaviour {
             oneBlockHold = true;
             OneBlockTaken = target;
             OneBlockTaken.BroadcastMessage("OnHold");
-            BanqueSons.Catch.start();
+            //BanqueSons.Catch.start();
         }
     }
 
@@ -303,7 +303,7 @@ public class Avatar : MonoBehaviour {
             OneBlockTaken.BroadcastMessage("OnHold");
 			OneBlockTaken.GetComponent<Rigidbody> ().velocity = transform.forward * impulsion;
             LeaveBlock();
-            BanqueSons.Throw.start();
+            //BanqueSons.Throw.start();
         }
     }
 
@@ -336,7 +336,7 @@ public class Avatar : MonoBehaviour {
             {
                 col.BroadcastMessage("OnSignal");
             }
-            BanqueSons.Signal.start();
+            //BanqueSons.Signal.start();
             //manaCurrent -= manaWillBeUsed;
         }
     } 
