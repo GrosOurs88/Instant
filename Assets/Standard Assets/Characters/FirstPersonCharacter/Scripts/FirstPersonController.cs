@@ -31,8 +31,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         /// <summary>
         /// Attika Modification's
         /// </summary>
-        [SerializeField] private float TriggerDistance = 2.0f;
-        [SerializeField] private float myPosInitial;
+        [SerializeField] private float TriggerDistance = 5.0f;
         [SerializeField] private bool canBump = false;
         [SerializeField] private float forceDown = -5.0f;
         public float force = 100.0f;
@@ -65,8 +64,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
-
-            myPosInitial = transform.position.y;
         }
 
 
@@ -82,10 +79,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
             {
-                if (canBump)
-                {
-                    Bump();
-                }
                 StartCoroutine(m_JumpBob.DoBobCycle());
                 PlayLandingSound();
                 m_MoveDir.y = 0f;
@@ -127,6 +120,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             if (m_CharacterController.isGrounded)
             {
+                canBump = false;
                 m_MoveDir.y = -m_StickToGroundForce;
 
                 if (m_Jump)
@@ -144,18 +138,21 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             if (!m_CharacterController.isGrounded)
             {
-                float myYPos = transform.position.y;
-                if (myYPos < myPosInitial + TriggerDistance)
+                if (transform.position.y > TriggerDistance)
                 {
-                    if (Input.GetKey(KeyCode.LeftControl))
+                    if (Input.GetKeyDown(KeyCode.LeftControl))
                     {
                         m_MoveDir.y = m_JumpSpeed * forceDown;
                         canBump = true;
                     }
+                    else
+                    {
+                        canBump = false;
+                    }
                 }
-                else
+                if (canBump)
                 {
-                    canBump = false;
+                    Bump();
                 }
             }
 
@@ -166,6 +163,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             m_MouseLook.UpdateCursorLock();
         }
+
+        
 
         private void Bump()
         {
