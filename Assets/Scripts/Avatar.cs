@@ -154,14 +154,14 @@ public class Avatar : MonoBehaviour {
 
             OneBlockTaken.transform.position = transform.position + transform.forward * distToBlock;
 
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            if (Input.GetKey(KeyCode.Mouse0))
             {
-                clicked += 0.01f;
+                clicked += 2 * Time.deltaTime;
                 if (clicked > 1.0f)
                 {
                     clicked = 1.0f;
                 }
-                impulsion = (int)Mathf.Lerp(5.0f, 40.0f, clicked);
+                impulsion = Mathf.Lerp(40f, 150f, clicked);
             }
             if (Input.GetKeyUp(KeyCode.Mouse0))
             {

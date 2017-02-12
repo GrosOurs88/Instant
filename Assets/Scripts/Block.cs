@@ -35,16 +35,15 @@ public class Block : MonoBehaviour
     {   
         rigid = GetComponent<Rigidbody>();
         rend = GetComponent<Renderer>();
-        outline = GetComponent<cakeslice.Outline>();
         signalsLeft = numberOfSignalToUnfix;
         rend.material = neutralMaterial;
-        outline.eraseRenderer = true;
+        Destroy(GetComponent<cakeslice.Outline>());
     }
+
 
     private void Update()
     {
         UpdateState();
-        GizmosService.Text(state.ToString() + '\n' + rigid.velocity.magnitude.ToString(), transform.position + transform.up * 1.5f);
     }
 
     private void UpdateState()
@@ -53,10 +52,8 @@ public class Block : MonoBehaviour
         {
             
             case BlockState.NEUTRAL:
-                if (IsSleeping() == false)
-                {
+                if(IsSleeping() == false)
                     SwitchState(BlockState.ACTIVE);
-                }
                 break;
                 
 
@@ -74,12 +71,14 @@ public class Block : MonoBehaviour
                 }
                 break;
 
+                /*
             case BlockState.FIXED:
                 if (signalsLeft <= 0)
                 {
                     SwitchState(BlockState.NEUTRAL);
                 }
                 break;
+                */
 
         }
     }
@@ -93,31 +92,30 @@ public class Block : MonoBehaviour
             case BlockState.NEUTRAL:
                 tag = "Block";
                 rend.material = neutralMaterial;
-                rigid.isKinematic = false;
                 break;
 
             case BlockState.ACTIVE:
                 tag = "Block";
+                StartCoroutine("FadeToGrey", timeBeforeBackToNeutral);
                 rend.material = activeMaterial;
-                rigid.isKinematic = false;
                 break;
 
             case BlockState.FIXED:
                 tag = "Untagged";
-                rend.material = fixedMaterial;                
-                rigid.isKinematic = true;
+                rend.material = fixedMaterial;
+                DesactivatePhysics();
                 if (autoUnfix)
                     StartCoroutine("FadeToGrey", timeBeforeUnfix);
                 break;
 
             case BlockState.HOLD:
-                outline.eraseRenderer = false;
+                ActiveOutline();
                 transform.GetChild(0).gameObject.SetActive(true);
                 transform.GetChild(0).rotation = Quaternion.identity;
                 transform.GetChild(0).position = transform.position + new Vector3(0, -10.0f, 0);
                 tag = "Untagged";
                 rend.material = holdMaterial;
-                rigid.isKinematic = true;
+                DesactivatePhysics();
                 break;
         }
     }
@@ -127,11 +125,13 @@ public class Block : MonoBehaviour
         switch(state)
         {
             case BlockState.HOLD:
-                outline.eraseRenderer = true;
+                DesactivateOutline();
+                ActivatePhysics();
                 transform.GetChild(0).gameObject.SetActive(false);
                 break;
 
             case BlockState.FIXED:
+                ActivatePhysics();
                 signalsLeft = numberOfSignalToUnfix;
                 break;
         }
@@ -168,8 +168,7 @@ public class Block : MonoBehaviour
         /*
         else if (state == BlockState.FIXED)
         {
-            signalsLeft--;
-            rend.material.color = Color.Lerp(fixedMaterial.color , neutralMaterial.color - fixedMaterial.color * 0.15f, (-1.0f/numberOfSignalToUnfix) * signalsLeft + 1.0f);
+            SwitchState(BlockState.ACTIVE);
         }
         */
     }
@@ -193,6 +192,26 @@ public class Block : MonoBehaviour
         {
             SwitchState(BlockState.ACTIVE);
         }
+    }
+
+    private void DesactivatePhysics()
+    {
+        rigid.isKinematic = true;
+    }
+
+    private void ActivatePhysics()
+    {
+        rigid.isKinematic = false;
+    }
+
+    private void ActiveOutline()
+    {
+        outline = gameObject.AddComponent<cakeslice.Outline>();
+    }
+
+    private void DesactivateOutline()
+    {
+        Destroy(outline);
     }
 
     private bool IsSleeping()

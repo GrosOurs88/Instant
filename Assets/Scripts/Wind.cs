@@ -21,7 +21,8 @@ public class Wind : MonoBehaviour
         {
             foreach(GameObject go in blocks)
             {
-                go.GetComponent<Rigidbody>().AddForce(appliedForce*multiplicator);
+                if (go.GetComponent<Rigidbody>() != null)
+                    go.GetComponent<Rigidbody>().AddForce(appliedForce*multiplicator);
             }
         }
 
