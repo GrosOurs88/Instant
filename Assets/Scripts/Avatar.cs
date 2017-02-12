@@ -65,6 +65,7 @@ public class Avatar : MonoBehaviour {
     private void Update()
     {
         SignalFeedbackVisuel.rectTransform.localScale = new Vector3(radiusSignal * 0.75f, radiusSignal * 0.75f, 1);
+        SelectionFdbck.rectTransform.localScale = new Vector3(radiusSelectionEvolve, radiusSelectionEvolve, 1.0f);
 
         //// Gestion du mana ////
         /*ManaUpdate();
@@ -274,6 +275,7 @@ public class Avatar : MonoBehaviour {
         if (Pickable(out target) == true)
         {
             oneBlockHold = true;
+            manyBlocksHold = false;
             OneBlockTaken = target;
             OneBlockTaken.BroadcastMessage("OnHold");
             //BanqueSons.Catch.start();
@@ -285,6 +287,7 @@ public class Avatar : MonoBehaviour {
         if (SeveralPickable(out Blocks) == true)
         {
             manyBlocksHold = true;
+            oneBlockHold = true;
             ManyBlocksTaken = Blocks;
             foreach (GameObject a in ManyBlocksTaken)
             {
@@ -337,7 +340,6 @@ public class Avatar : MonoBehaviour {
     private void MultiSelection()
     {
         radiusSelectionEvolve = Mathf.Lerp(radiusSelectionEvolve, currentRadiusSelectionOfBlocks, selectionClicked);
-        SelectionFdbck.rectTransform.localScale = new Vector3(radiusSelectionEvolve, radiusSelectionEvolve, 1.0f);
     } 
 
     private void EmitSignal()
