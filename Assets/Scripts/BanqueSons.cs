@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BanqueSons : MonoBehaviour 
 {
+	/*
 	public static FMOD.Studio.EventInstance Ambiance; 
 
 	public static FMOD.Studio.EventInstance Walk; 
@@ -38,4 +39,5 @@ public class BanqueSons : MonoBehaviour
 		Ambiance.start ();
 
 	}
+	*/
 }

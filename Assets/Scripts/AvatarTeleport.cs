@@ -5,8 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class AvatarTeleport : MonoBehaviour
 {
+	/*
 	void Update () 
 	{
+		
 		if (Input.GetKeyDown(KeyCode.Alpha1))
 			{
 				SceneManager.LoadScene("Hugo_salle_test_1");
@@ -28,4 +30,5 @@ public class AvatarTeleport : MonoBehaviour
 				SceneManager.LoadScene("Hugo_salle_test_5");
 			}
 	}
+	*/
 }

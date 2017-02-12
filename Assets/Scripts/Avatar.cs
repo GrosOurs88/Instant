@@ -329,7 +329,7 @@ public class Avatar : MonoBehaviour {
         {
             a.BroadcastMessage("OnHold");
             a.GetComponent<Rigidbody>().AddForce(transform.forward * impulsion, ForceMode.Impulse);
-            BanqueSons.Throw.start();
+       //     BanqueSons.Throw.start();
         }
         LeaveBlock();
     }
