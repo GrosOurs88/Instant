@@ -103,41 +103,41 @@ public class Avatar : MonoBehaviour {
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
             if (radiusSelectionEvolve <= 2.0f)
+            {
+                if (oneBlockHold == false)
                 {
-                    if (oneBlockHold == false)
+                    TakeOneBlock();
+                    currentRadiusSelectionOfBlocks = 1.0f;
+                    radiusSelectionEvolve = currentRadiusSelectionOfBlocks;
+                }
+                else
+                {
+                    OneBlockTaken.BroadcastMessage("OnHold");
+                    LeaveBlock();
+                }
+            }
+            if (radiusSelectionEvolve > 2.0f)
+            {
+                if (manyBlocksHold == false)
+                {
+                    TakeSeveralBlocks();
+                    currentRadiusSelectionOfBlocks = 1.0f;
+                    radiusSelectionEvolve = currentRadiusSelectionOfBlocks;
+                }
+                else
+                {
+                    foreach (GameObject a in ManyBlocksTaken)
                     {
-                        TakeOneBlock();
-                        currentRadiusSelectionOfBlocks = 1.0f;
-                        radiusSelectionEvolve = currentRadiusSelectionOfBlocks;
-                    }
-                    else
-                    {
-                        OneBlockTaken.BroadcastMessage("OnHold");
+                        a.BroadcastMessage("OnHold");
                         LeaveBlock();
                     }
                 }
-                if (radiusSelectionEvolve > 2.0f)
-                {
-                    if (manyBlocksHold == false)
-                    {
-                        TakeSeveralBlocks();
-                        currentRadiusSelectionOfBlocks = 1.0f;
-                        radiusSelectionEvolve = currentRadiusSelectionOfBlocks;
-                    }
-                    else
-                    {
-                        foreach (GameObject a in ManyBlocksTaken)
-                        {
-                            a.BroadcastMessage("OnHold");
-                            LeaveBlock();
-                        }
-                    }
-                }
             }
+        }
         
 
         //// Lorsqu'un block est saisi ////
-        if (oneBlockHold == true)
+        if (oneBlockHold == true && manyBlocksHold == false)
         {
             if (Input.GetAxis("Mouse ScrollWheel") < 0) // Scroll vers le bas
             {
@@ -174,7 +174,7 @@ public class Avatar : MonoBehaviour {
         }
 
         //// Lorsque plusieurs blocks sont saisis ////
-        if (manyBlocksHold == true)
+        if (manyBlocksHold == true && oneBlockHold == false)
         {
             if (Input.GetAxis("Mouse ScrollWheel") < 0) // Scroll vers le bas
             {
@@ -195,10 +195,6 @@ public class Avatar : MonoBehaviour {
 
             ArrangeTheBlocks();
 
-            foreach (GameObject a in ManyBlocksTaken)
-            {
-                a.transform.position = transform.position + transform.forward * distToBlock;
-            }
             if (Input.GetKey(KeyCode.Mouse0))
             {
                 ImpulseSeveralBlocks();
@@ -301,7 +297,10 @@ public class Avatar : MonoBehaviour {
     {
         int numberOfBlokcsHold = ManyBlocksTaken.Count;
         Vector3 pos = transform.position + transform.forward * distToBlock;
-
+        for (int i = 0; i < ManyBlocksTaken.Count; i ++)
+        {
+            ManyBlocksTaken[i].transform.position = pos;
+        }
     }
 
     private void LeaveBlock()
