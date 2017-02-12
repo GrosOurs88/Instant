@@ -33,7 +33,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         /// </summary>
         [SerializeField] private float TriggerDistance = 5.0f;
         [SerializeField] private bool canBump = false;
-        [SerializeField] private float forceDown = -5.0f;
+        [SerializeField] private float forceDown = -3.0f;
         public float force = 100.0f;
         public float radius = 10.0f;
 
