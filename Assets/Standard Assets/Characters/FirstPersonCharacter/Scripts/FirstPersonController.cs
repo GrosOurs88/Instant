@@ -142,6 +142,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 {
                     if (Input.GetKeyDown(KeyCode.LeftControl))
                     {
+                        //float DistToGround = transform.position.y;
+                        //forceDown = (int) Mathf.Lerp(-5.0f, -20.0f, )
                         m_MoveDir.y = m_JumpSpeed * forceDown;
                         canBump = true;
                     }
