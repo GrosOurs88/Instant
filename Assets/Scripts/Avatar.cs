@@ -13,6 +13,8 @@ public class Avatar : MonoBehaviour {
     private bool manyBlocksHold = false;
     private GameObject OneBlockTaken = null;
     private bool oneBlockHold = false;
+    public Image SelectionFdbck;
+    private float selectionClicked = 0.0f;
 
     private float currentRadiusSelectionOfBlocks = 1.0f;
     private float maxRadiusSelection = 7.0f;
@@ -94,6 +96,7 @@ public class Avatar : MonoBehaviour {
         if (Input.GetKey(KeyCode.Mouse1))
         {
             currentRadiusSelectionOfBlocks *= 1.01f;
+            selectionClicked += 2 * Time.deltaTime;
             MultiSelection();
         }
         if (Input.GetKeyUp(KeyCode.Mouse1))
@@ -333,9 +336,9 @@ public class Avatar : MonoBehaviour {
 
     private void MultiSelection()
     {
-        radiusSelectionEvolve = Mathf.Lerp(radiusSelectionEvolve, currentRadiusSelectionOfBlocks, 0.1f);
-        // Manque Feedback Selection 
-    } // Manque Feedback Selection 
+        radiusSelectionEvolve = Mathf.Lerp(radiusSelectionEvolve, currentRadiusSelectionOfBlocks, selectionClicked);
+        SelectionFdbck.rectTransform.localScale = new Vector3(radiusSelectionEvolve, radiusSelectionEvolve, 1.0f);
+    } 
 
     private void EmitSignal()
     {
