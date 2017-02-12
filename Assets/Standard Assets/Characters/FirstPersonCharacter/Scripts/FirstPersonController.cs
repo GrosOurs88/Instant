@@ -31,11 +31,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
         /// <summary>
         /// Attika Modification's
         /// </summary>
-        [SerializeField] private float TriggerDistance = 5.0f;
-        [SerializeField] private bool canBump = false;
-        [SerializeField] private float forceDown = -3.0f;
-        public float force = 100.0f;
-        public float radius = 10.0f;
+        [Header("Bump")]
+        private bool hasBump = false;
+        [SerializeField] private float forceDown = -2.0f;
+        public float minDistBeforeBump = 2.0f;
+        public float maxDistBeforeBump = 30.0f;
+        public float minBumpRadius = 5.0f;
+        public float maxBumpRadius = 50.0f;
+        public float minBumpForce = 10.0f;
+        public float maxBumpForce = 30.0f;
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -50,6 +54,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_NextStep;
         private bool m_Jumping;
         private AudioSource m_AudioSource;
+
+        private Vector3 startBumpPos;
 
         // Use this for initialization
         private void Start()
@@ -120,7 +126,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             if (m_CharacterController.isGrounded)
             {
-                canBump = false;
                 m_MoveDir.y = -m_StickToGroundForce;
 
                 if (m_Jump)
@@ -136,28 +141,23 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_MoveDir += Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
             }
 
+            //Bump
             if (!m_CharacterController.isGrounded)
             {
-                if (transform.position.y > TriggerDistance)
+                if (Input.GetKeyDown(KeyCode.LeftControl) && !hasBump)
                 {
-                    if (Input.GetKeyDown(KeyCode.LeftControl))
-                    {
-                        //float DistToGround = transform.position.y;
-                        //forceDown = (int) Mathf.Lerp(-5.0f, -20.0f, )
-                        m_MoveDir.y = m_JumpSpeed * forceDown;
-                        canBump = true;
-                    }
-                    else
-                    {
-                        canBump = false;
-                    }
-                }
-                if (canBump)
-                {
-                    Bump();
+                    m_MoveDir.y = m_JumpSpeed * forceDown;
+                    startBumpPos = transform.position;
+                    hasBump = true;
                 }
             }
-
+            else if (hasBump)
+            {
+                hasBump = false;
+                Bump(Vector3.Distance(startBumpPos, transform.position));
+            }
+            //endbump
+            
             m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
 
             ProgressStepCycle(speed);
@@ -168,18 +168,22 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         
 
-        private void Bump()
+        private void Bump(float bumpSize)
         {
-            Collider[] Blocks = Physics.OverlapSphere(transform.position, radius);
-            foreach (Collider col in Blocks)
+            if(bumpSize >= minDistBeforeBump)
             {
-                Rigidbody rbs = col.gameObject.GetComponent<Rigidbody>();
-                if (rbs != null)
+                float ratio = bumpSize / (maxDistBeforeBump - minDistBeforeBump);
+                float radius = Mathf.Lerp(minBumpRadius, maxBumpRadius, ratio);
+                float force = Mathf.Lerp(minBumpForce, maxBumpForce, ratio);
+                Collider[] cols = Physics.OverlapSphere(transform.position, radius);
+                foreach(Collider col in cols)
                 {
-                    rbs.AddExplosionForce(force, transform.position, radius);
+                    if (col.tag == "Block")
+                    {
+                        col.GetComponent<Rigidbody>().AddExplosionForce(force, transform.position, radius);
+                    }
                 }
             }
-            canBump = false;
         }
 
 
