@@ -173,19 +173,30 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if(bumpSize >= minDistBeforeBump)
             {
                 float ratio = bumpSize / (maxDistBeforeBump - minDistBeforeBump);
-                float radius = Mathf.Lerp(minBumpRadius, maxBumpRadius, ratio);
+                float trueBumpSize = Mathf.Lerp(minBumpRadius, maxBumpRadius, ratio);
                 float force = Mathf.Lerp(minBumpForce, maxBumpForce, ratio);
-                Collider[] cols = Physics.OverlapSphere(transform.position, radius);
+                Collider[] cols = Physics.OverlapSphere(transform.position, trueBumpSize);
                 foreach(Collider col in cols)
                 {
                     if (col.tag == "Block")
                     {
-                        col.GetComponent<Rigidbody>().AddExplosionForce(force, transform.position, radius);
+                        Vector3 distance = col.transform.position - transform.position;
+                        col.GetComponent<Rigidbody>().AddForce(GetBumpForce(trueBumpSize, force, distance));
                     }
                 }
             }
         }
 
+        private Vector3 GetBumpForce(float bumpSize, float force, Vector3 distance)
+        {
+            if (distance.magnitude > bumpSize)
+            {
+                return Vector3.zero;
+            }
+            Vector3 direction = Vector3.Lerp(Vector3.up, distance.normalized, distance.magnitude / bumpSize);
+            float magnitude = Mathf.Lerp(force, 0.0f, distance.magnitude / bumpSize);
+            return direction * magnitude;
+        }
 
         private void PlayJumpSound()
         {
