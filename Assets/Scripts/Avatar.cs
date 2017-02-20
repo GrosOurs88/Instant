@@ -32,7 +32,7 @@ public class Avatar : MonoBehaviour {
     public float radiusSignal = 1.0f;
     public Image SignalFeedbackVisuel;
 
-    public GameObject[] AllBlocks = new GameObject[50];
+    public GameObject[] AllBlocks;
     private float timerE = 1.5f;
     public float signalRange = 5.0f;
     
@@ -55,7 +55,7 @@ public class Avatar : MonoBehaviour {
          */
 
 
-    private void Start()
+    private void Awake()
     {
         cam = gameObject.GetComponent<Camera>().transform;
         //manaCurrent = manaMax;
@@ -165,7 +165,7 @@ public class Avatar : MonoBehaviour {
                 {
                     clicked = 1.0f;
                 }
-                impulsion = Mathf.Lerp(40f, 150f, clicked);
+                impulsion = Mathf.Lerp(5f, 100f, clicked);
             }
             if (Input.GetKeyUp(KeyCode.Mouse0))
             {

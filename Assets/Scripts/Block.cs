@@ -13,6 +13,8 @@ public class Block : MonoBehaviour
     public float numberOfSignalToUnfix = 3;
     public float timeBeforeBackToNeutral = 5.0f;
     public float timeBeforeUnfix = 5.0f;
+    public float triggerVelocity = 1.0f;
+    public bool canBeHold = true;
 
     [Header("Block's colors")]
     public Material neutralMaterial;
@@ -38,6 +40,14 @@ public class Block : MonoBehaviour
         signalsLeft = numberOfSignalToUnfix;
         rend.material = neutralMaterial;
         Destroy(GetComponent<cakeslice.Outline>());
+        if (canBeHold)
+        {
+            gameObject.tag = "Block";
+        }
+        else
+        {
+            gameObject.tag = "Untagged";
+        }
     }
 
 
@@ -90,12 +100,14 @@ public class Block : MonoBehaviour
         switch (state)
         {
             case BlockState.NEUTRAL:
-                tag = "Block";
+                if (canBeHold)
+                    tag = "Block";
                 rend.material = neutralMaterial;
                 break;
 
             case BlockState.ACTIVE:
-                tag = "Block";
+                if (canBeHold)
+                    tag = "Block";
                 StartCoroutine("FadeToGrey", timeBeforeBackToNeutral);
                 rend.material = activeMaterial;
                 break;
@@ -116,6 +128,7 @@ public class Block : MonoBehaviour
                 tag = "Untagged";
                 rend.material = holdMaterial;
                 DesactivatePhysics();
+                DesactiveCollision();
                 break;
         }
     }
@@ -127,6 +140,7 @@ public class Block : MonoBehaviour
             case BlockState.HOLD:
                 DesactivateOutline();
                 ActivatePhysics();
+                ActivateCollision();
                 transform.GetChild(0).gameObject.SetActive(false);
                 break;
 
@@ -204,6 +218,16 @@ public class Block : MonoBehaviour
         rigid.isKinematic = false;
     }
 
+    private void DesactiveCollision()
+    {
+        rigid.detectCollisions = false;
+    }
+
+    private void ActivateCollision()
+    {
+        rigid.detectCollisions = true;
+    }
+
     private void ActiveOutline()
     {
         outline = gameObject.AddComponent<cakeslice.Outline>();
@@ -216,7 +240,7 @@ public class Block : MonoBehaviour
 
     private bool IsSleeping()
     {
-        return rigid.velocity.magnitude < 1.0f;
+        return rigid.velocity.magnitude < triggerVelocity;
     }
 
 }

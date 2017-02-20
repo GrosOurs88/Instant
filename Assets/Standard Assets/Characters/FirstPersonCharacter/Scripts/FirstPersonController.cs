@@ -178,7 +178,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 Collider[] cols = Physics.OverlapSphere(transform.position, trueBumpSize);
                 foreach(Collider col in cols)
                 {
-                    if (col.tag == "Block")
+                    if (col.tag == "Block" || col.tag == "Untagged")
                     {
                         Vector3 distance = col.transform.position - transform.position;
                         col.GetComponent<Rigidbody>().AddForce(GetBumpForce(trueBumpSize, force, distance));
