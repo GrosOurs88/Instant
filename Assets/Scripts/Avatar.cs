@@ -13,6 +13,8 @@ public class Avatar : MonoBehaviour {
     private bool manyBlocksHold = false;
     private GameObject OneBlockTaken = null;
     private bool oneBlockHold = false;
+    private bool oneFrozenBlockTargeted = false;
+    private GameObject oneFrozenBlockHold = null;
     public Image SelectionFdbck;
     private float selectionClicked = 0.0f;
 
@@ -84,10 +86,7 @@ public class Avatar : MonoBehaviour {
             timerE -= Time.deltaTime;
             if (timerE < 0.0f)
             {
-                foreach (GameObject a in AllBlocks)
-                {
-                    a.BroadcastMessage("OnDesactivationSignal");
-                }
+                oneFrozenBlockHold.BroadcastMessage("OnDesactivationSignal");
                 timerE = 1.5f;
                 //manaCurrent = manaMax;
             }
@@ -265,6 +264,23 @@ public class Avatar : MonoBehaviour {
         return false;
     }
 
+    private bool BlockFrozenPickable(out GameObject BlockFrozen)
+    {
+        Ray r = new Ray(transform.position + cam.forward * 0.5f, cam.forward);
+        RaycastHit hit;
+        int layer_mask = Physics.DefaultRaycastLayers;
+        if (Physics.Raycast(r, out hit, maxDistToGrab, layer_mask))
+        {
+            if (hit.collider.gameObject.tag == "BlockFrozen")
+            {
+                BlockFrozen = hit.collider.gameObject;
+                return true;
+            }
+        }
+        BlockFrozen = null;
+        return false;
+    }
+
     private void TakeOneBlock()
     {
         GameObject target = null;
@@ -290,6 +306,16 @@ public class Avatar : MonoBehaviour {
                 a.BroadcastMessage("OnHold");
                 //BanqueSons.Catch.start();
             }
+        }
+    }
+
+    private void UnfrozeOneBlock()
+    {
+        GameObject thisFrozenBlock = null;
+        if (BlockFrozenPickable(out thisFrozenBlock) == true)
+        {
+            oneFrozenBlockTargeted = true;
+            oneFrozenBlockHold = thisFrozenBlock;
         }
     }
 
