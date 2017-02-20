@@ -5,27 +5,26 @@ using UnityEngine.UI;
 
 public class Avatar : MonoBehaviour {
 
-    [Header("Block Manipulation")] // Manque l'Image Selection Feedback
     private Transform cam;
 
-    public List<GameObject> ManyBlocksTaken = new List<GameObject>();
+    [Header("Block Manipulation")]
+    private List<GameObject> ManyBlocksTaken = new List<GameObject>();
     private List<GameObject> Blocks = new List<GameObject>();
     private bool manyBlocksHold = false;
     private GameObject OneBlockTaken = null;
     private bool oneBlockHold = false;
     private bool oneFrozenBlockTargeted = false;
     private GameObject oneFrozenBlockHold = null;
+
+    [Header("Selection Parameters")]
     public Image SelectionFdbck;
     private float selectionClicked = 0.0f;
-
     private float currentRadiusSelectionOfBlocks = 1.0f;
     private float maxRadiusSelection = 7.0f;
     private float radiusSelectionEvolve = 1.0f;
-
     public float maxDistToGrab;
     public float distToBlock = 5.0f;
-    
-    private float impulsion = 5.0f;
+    public float impulsion = 5.0f;
     private float clicked = 0.0f;
 
     [Header("Signal Parameters")] 
@@ -33,9 +32,8 @@ public class Avatar : MonoBehaviour {
     public float signalTimer;
     public float radiusSignal = 1.0f;
     public Image SignalFeedbackVisuel;
-
     public GameObject[] AllBlocks;
-    private float timerE = 1.5f;
+    public float timerE = 1.5f;
     public float signalRange = 5.0f;
     
     /* 
