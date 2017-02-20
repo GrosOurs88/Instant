@@ -10,7 +10,7 @@ public enum BlockState
 public class Block : MonoBehaviour
 {
     [Header("Block's parameters")]
-    public float numberOfSignalToUnfix = 3;
+    public float numberOfSignalToUnfix = 3; // OBSOLESSENCE PROGRAMMEEEEEEEEE !!!!!
     public float timeBeforeBackToNeutral = 5.0f;
     public float timeBeforeUnfix = 5.0f;
     public float triggerVelocity = 1.0f;
@@ -113,7 +113,7 @@ public class Block : MonoBehaviour
                 break;
 
             case BlockState.FIXED:
-                tag = "Untagged";
+                tag = "BlockFrozen";
                 rend.material = fixedMaterial;
                 DesactivatePhysics();
                 if (autoUnfix)

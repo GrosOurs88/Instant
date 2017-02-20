@@ -86,10 +86,12 @@ public class Avatar : MonoBehaviour {
             timerE -= Time.deltaTime;
             if (timerE < 0.0f)
             {
+                UnfrozeOneBlock();
                 oneFrozenBlockHold.BroadcastMessage("OnDesactivationSignal");
                 timerE = 1.5f;
                 //manaCurrent = manaMax;
             }
+            oneFrozenBlockHold = null;
         }
 
         //// Pour saisir un block ou plusieurs blocks ////
