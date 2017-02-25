@@ -33,8 +33,14 @@ public class Avatar : MonoBehaviour {
     public float radiusSignal = 1.0f;
     public Image SignalFeedbackVisuel;
     public GameObject[] AllBlocks;
-    public float timerE = 1.5f;
+    public float timerE = 0.5f;
     public float signalRange = 5.0f;
+
+    [Header("Mana Gestion")]
+    private int manaCurrent;
+    public int manaMax = 100;
+    private int manaWillBeUsed = 0;
+    public bool useThisFuckingMana = false;
     
     /* 
         - On peut vérifier qu'un block est saissisable, 
@@ -58,7 +64,7 @@ public class Avatar : MonoBehaviour {
     private void Awake()
     {
         cam = gameObject.GetComponent<Camera>().transform;
-        //manaCurrent = manaMax;
+        manaCurrent = manaMax;
         AllBlocks = GameObject.FindGameObjectsWithTag("Block");
     }
 
@@ -68,15 +74,18 @@ public class Avatar : MonoBehaviour {
         SelectionFdbck.rectTransform.localScale = new Vector3(radiusSelectionEvolve, radiusSelectionEvolve, 1.0f);
 
         //// Gestion du mana ////
-        /*ManaUpdate();
-        if (manaWillBeUsed > manaCurrent)
+        if (useThisFuckingMana)
         {
-            canEmitSignal = false;
+            ManaUpdate();
+            if (manaWillBeUsed > manaCurrent)
+            {
+                canEmitSignal = false;
+            }
+            else
+            {
+                canEmitSignal = true;
+            }
         }
-        else
-        {
-            canEmitSignal = true;
-        }*/
 
         //// Pour défiger tous les blocks ////
         if (Input.GetKey(KeyCode.E))
@@ -86,8 +95,8 @@ public class Avatar : MonoBehaviour {
             {
                 UnfrozeOneBlock();
                 oneFrozenBlockHold.BroadcastMessage("OnDesactivationSignal");
-                timerE = 1.5f;
-                //manaCurrent = manaMax;
+                timerE = 0.5f;
+                manaCurrent = manaMax;
             }
             oneFrozenBlockHold = null;
         }
@@ -399,14 +408,13 @@ public class Avatar : MonoBehaviour {
         //ManaUpdate();
     }*/
 
-    /*private void ManaUpdate()
+    private void ManaUpdate()
     {
         manaWillBeUsed = (int)Mathf.Lerp(5.0f, 30.0f, (radiusSignal - 1.0f) / 4.0f);
-
-        MaxMana.text = "Ressources Max :" + manaMax.ToString();
-        CurrentMana.text = "Ressources Actuelles :" + manaCurrent.ToString();
+        //MaxMana.text = "Ressources Max :" + manaMax.ToString();
+        //CurrentMana.text = "Ressources Actuelles :" + manaCurrent.ToString();
         int manaUsed = 0;
         manaUsed = manaCurrent - manaWillBeUsed;
-        UsedMana.text = "Ressources restantes après action :" + manaUsed.ToString();
-    }*/
+        //UsedMana.text = "Ressources restantes après action :" + manaUsed.ToString();
+    }
 }
