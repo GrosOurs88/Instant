@@ -192,7 +192,12 @@ public class Avatar : MonoBehaviour {
                 }
             }
 
-            ArrangeTheBlocks();
+            int numberOfBlokcsHold = ManyBlocksTaken.Count;
+            Vector3 pos = transform.position + transform.forward * (distToBlock + 360 / numberOfBlokcsHold);
+            for (int i = 0; i < ManyBlocksTaken.Count; i++)
+            {
+                ManyBlocksTaken[i].transform.position = pos;
+            }
 
             if (Input.GetKey(KeyCode.Mouse0))
             {
@@ -316,16 +321,6 @@ public class Avatar : MonoBehaviour {
         {
             oneFrozenBlockTargeted = true;
             oneFrozenBlockHold = thisFrozenBlock;
-        }
-    }
-
-    private void ArrangeTheBlocks()
-    {
-        int numberOfBlokcsHold = ManyBlocksTaken.Count;
-        Vector3 pos = transform.position + transform.forward * distToBlock;
-        for (int i = 0; i < ManyBlocksTaken.Count; i ++)
-        {
-            ManyBlocksTaken[i].transform.position = pos;
         }
     }
 
