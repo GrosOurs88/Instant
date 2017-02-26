@@ -23,7 +23,7 @@ public class Block : MonoBehaviour
     public Material fixedMaterial;
 
     [SerializeField]
-    private BlockState state = BlockState.NEUTRAL;
+    public BlockState state = BlockState.NEUTRAL;
 
     private Rigidbody rigid;
     private Renderer rend;
@@ -197,7 +197,6 @@ public class Block : MonoBehaviour
 
     private void OnHold()
     {
-        Debug.Log("OnHold");
         if (state == BlockState.ACTIVE || state == BlockState.NEUTRAL)
         {
             SwitchState(BlockState.HOLD);
