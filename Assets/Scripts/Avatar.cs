@@ -108,6 +108,7 @@ public class Avatar : MonoBehaviour {
             selectionClicked += 2 * Time.deltaTime;
             MultiSelection();
         }
+
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
             if (radiusSelectionEvolve <= 2.0f)
@@ -147,6 +148,7 @@ public class Avatar : MonoBehaviour {
         //// Lorsqu'un block est saisi ////
         if (oneBlockHold == true && manyBlocksHold == false)
         {
+            Debug.Log("et ici ?");
             if (Input.GetAxis("Mouse ScrollWheel") < 0) // Scroll vers le bas
             {
                 distToBlock -= 0.5f; // ajouter variable dans l'inspecteur si besoin de tester ça aussi
@@ -184,6 +186,7 @@ public class Avatar : MonoBehaviour {
         //// Lorsque plusieurs blocks sont saisis ////
         if (manyBlocksHold == true && oneBlockHold == false)
         {
+            Debug.Log("ça passe ici ?");
             if (Input.GetAxis("Mouse ScrollWheel") < 0) // Scroll vers le bas
             {
                 distToBlock -= 0.5f; // ajouter variable dans l'inspecteur si besoin de tester ça aussi
@@ -205,6 +208,7 @@ public class Avatar : MonoBehaviour {
             //Vector3 pos = transform.position + transform.forward * (distToBlock + 360 / numberOfBlokcsHold);
             for (int i = 0; i < ManyBlocksTaken.Count; i++)
             {
+                Debug.Log("aaaarttttta");
                 float thisAngle = AngleOnACircle(i, numberOfBlokcsHold);
                 Vector2 pos = PointOnACircle(distToBlock, i, numberOfBlokcsHold);
                 ManyBlocksTaken[i].transform.position = pos;
@@ -347,6 +351,7 @@ public class Avatar : MonoBehaviour {
             oneFrozenBlockHold = thisFrozenBlock;
         }
     }
+
 
     private void LeaveBlock()
     {
