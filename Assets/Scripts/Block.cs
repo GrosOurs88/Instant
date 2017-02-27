@@ -15,18 +15,20 @@ public class Block : MonoBehaviour
     public float timeBeforeUnfix = 5.0f;
     public float triggerVelocity = 1.0f;
     public bool canBeHold = true;
+    public BlockState state = BlockState.NEUTRAL;
 
     [Header("Block's colors")]
     public Material neutralMaterial;
     public Material activeMaterial;
     public Material holdMaterial;
     public Material fixedMaterial;
-
-    [SerializeField]
-    public BlockState state = BlockState.NEUTRAL;
+    public Mesh normalMesh;
+    public Mesh fixedMesh;
+    public bool useNewMeshes = false;
 
     private Rigidbody rigid;
     private Renderer rend;
+    private MeshFilter mesh;
     private cakeslice.Outline outline;
     private float signalsLeft;
     private bool isTimerRunning = false;
@@ -48,6 +50,11 @@ public class Block : MonoBehaviour
         {
             gameObject.tag = "Untagged";
         }
+        if (useNewMeshes)
+        {
+            mesh = GetComponent<MeshFilter>();
+            mesh.mesh = normalMesh;
+        }        
     }
 
 
@@ -80,16 +87,6 @@ public class Block : MonoBehaviour
                     rend.material = activeMaterial;
                 }
                 break;
-
-                /*
-            case BlockState.FIXED:
-                if (signalsLeft <= 0)
-                {
-                    SwitchState(BlockState.NEUTRAL);
-                }
-                break;
-                */
-
         }
     }
 
@@ -118,6 +115,10 @@ public class Block : MonoBehaviour
                 DesactivatePhysics();
                 if (autoUnfix)
                     StartCoroutine("FadeToGrey", timeBeforeUnfix);
+                if (useNewMeshes)
+                {
+                    mesh.mesh = fixedMesh;
+                }
                 break;
 
             case BlockState.HOLD:
@@ -147,6 +148,10 @@ public class Block : MonoBehaviour
             case BlockState.FIXED:
                 ActivatePhysics();
                 signalsLeft = numberOfSignalToUnfix;
+                if (useNewMeshes)
+                {
+                    mesh.mesh = normalMesh;
+                }                
                 break;
         }
     }
