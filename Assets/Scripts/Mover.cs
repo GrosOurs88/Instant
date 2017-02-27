@@ -112,20 +112,21 @@ public class Mover : MonoBehaviour
         iTween.DrawPath(transforms);
     }
 
-    void OnCollisionEnter()
+    void OnCollisionEnter(Collision col)
     {
-        collision = true;
-        //numberOfCollision++;
-        Desactivate();
+        if(col.gameObject.tag != "Player")
+        {
+            collision = true;
+            Desactivate();
+        }
     }
 
-    void OnCollisionExit()
+    void OnCollisionExit(Collision col)
     {
-        //numberOfCollision--;
-        
-            //numberOfCollision = 0;
+        if (col.gameObject.tag != "Player")
+        {
             collision = false;
             Activate();
-        
+        }        
     }
 }
