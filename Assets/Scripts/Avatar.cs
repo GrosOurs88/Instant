@@ -202,9 +202,11 @@ public class Avatar : MonoBehaviour {
             }
 
             int numberOfBlokcsHold = ManyBlocksTaken.Count;
-            Vector3 pos = transform.position + transform.forward * (distToBlock + 360 / numberOfBlokcsHold);
+            //Vector3 pos = transform.position + transform.forward * (distToBlock + 360 / numberOfBlokcsHold);
             for (int i = 0; i < ManyBlocksTaken.Count; i++)
             {
+                float thisAngle = AngleOnACircle(i, numberOfBlokcsHold);
+                Vector2 pos = PointOnACircle(distToBlock, i, numberOfBlokcsHold);
                 ManyBlocksTaken[i].transform.position = pos;
             }
 
@@ -321,6 +323,19 @@ public class Avatar : MonoBehaviour {
                 //BanqueSons.Catch.start();
             }
         }
+    }
+
+    public static float AngleOnACircle(int indexPoint, int nbTotalPoint, float startAngle = 0f, float angle = 360f)
+    {
+        float angleOnePoint = (angle / nbTotalPoint);
+        float decalToInverse = (nbTotalPoint % 2 == 1) ? (3 * (angle / nbTotalPoint) / 4) : 0;
+        return angleOnePoint * indexPoint + decalToInverse + startAngle;
+    }
+
+    public static Vector2 PointOnACircle(float radius, int indexPoint, int nbTotalPoint, float startAngle = 0f, float angle = 360f)
+    {
+        float currentAngle = AngleOnACircle(indexPoint, nbTotalPoint, startAngle, angle) * Mathf.Deg2Rad;
+        return new Vector2(radius * Mathf.Cos(currentAngle), radius * Mathf.Sin(currentAngle));
     }
 
     private void UnfrozeOneBlock()
