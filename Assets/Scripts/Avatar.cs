@@ -148,7 +148,7 @@ public class Avatar : MonoBehaviour {
         //// Lorsqu'un block est saisi ////
         if (oneBlockHold == true && manyBlocksHold == false)
         {
-            Debug.Log("et ici ?");
+//            Debug.Log("et ici ?");
             if (Input.GetAxis("Mouse ScrollWheel") < 0) // Scroll vers le bas
             {
                 distToBlock -= 0.5f; // ajouter variable dans l'inspecteur si besoin de tester ça aussi
